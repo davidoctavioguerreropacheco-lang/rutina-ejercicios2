@@ -1,0 +1,1715 @@
+<title>Rutina David v3</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,600;0,800;1,800&family=Barlow:wght@300;400;500;600&display=swap">
+
+<style>
+/* ═══════════════════════════════════════════════════════════
+   RUTINA DAVID v3
+   Layout: sticky header · 4 tabs (A / B / Progresión / Registro)
+   Tokens: musgo/lima · Barlow Condensed italic 800 display
+   ═══════════════════════════════════════════════════════════ */
+:root {
+  --bg:        #F2EFE6;
+  --surface:   #FFFFFF;
+  --lift:      #E8E4D8;
+  --edge:      #D0CAB8;
+  --text:      #12160A;
+  --dim:       #5A5E48;
+  --accent:    #3D6B00;
+  --accent-l:  #C8F53E;
+  --accent-bg: #EAF5C8;
+  --lime:      #3D6B00;
+  --danger:    #C0392B;
+  --warn:      #B07800;
+  --ok:        #2E7D32;
+  --ok-bg:     #E8F5E9;
+  --cal-green: #4CAF50;
+  --cal-yellow:#FFC107;
+  --cal-red:   #F44336;
+  --cal-empty: #E0E0E0;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg:        #0E1009;
+    --surface:   #181D10;
+    --lift:      #222A18;
+    --edge:      #323D24;
+    --text:      #EEE9DC;
+    --dim:       #7A8060;
+    --accent:    #C8F53E;
+    --accent-l:  #C8F53E;
+    --accent-bg: rgba(200,245,62,.1);
+    --lime:      #C8F53E;
+    --danger:    #E74C3C;
+    --warn:      #E8B840;
+    --ok:        #66BB6A;
+    --ok-bg:     rgba(102,187,106,.1);
+    --cal-green: #66BB6A;
+    --cal-yellow:#FFD54F;
+    --cal-red:   #EF5350;
+    --cal-empty: #2A2A2A;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg:        #0E1009;
+  --surface:   #181D10;
+  --lift:      #222A18;
+  --edge:      #323D24;
+  --text:      #EEE9DC;
+  --dim:       #7A8060;
+  --accent:    #C8F53E;
+  --accent-l:  #C8F53E;
+  --accent-bg: rgba(200,245,62,.1);
+  --lime:      #C8F53E;
+  --danger:    #E74C3C;
+  --warn:      #E8B840;
+  --ok:        #66BB6A;
+  --ok-bg:     rgba(102,187,106,.1);
+  --cal-green: #66BB6A;
+  --cal-yellow:#FFD54F;
+  --cal-red:   #EF5350;
+  --cal-empty: #2A2A2A;
+  color-scheme: dark;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Barlow', system-ui, sans-serif;
+  font-size: 15px;
+  line-height: 1.6;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 0;
+  min-height: 100%;
+}
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0 0 auto;
+  height: env(safe-area-inset-top, 0px);
+  background: var(--bg);
+  z-index: 51;
+}
+
+/* ── HEADER ─────────────────────────────────────────────── */
+.app-header {
+  position: sticky;
+  top: env(safe-area-inset-top, 0px);
+  background: var(--bg);
+  border-bottom: 1px solid var(--edge);
+  padding: 14px 0 0;
+  z-index: 50;
+}
+.header-row {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 12px;
+  padding-bottom: 12px;
+}
+.header-title {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-style: italic;
+  font-weight: 800;
+  font-size: 22px;
+  line-height: 1;
+  color: var(--text);
+}
+.header-title span { color: var(--accent); }
+.header-sub { font-size: 11px; color: var(--dim); margin-top: 2px; }
+.theme-btn {
+  background: var(--lift);
+  border: 1px solid var(--edge);
+  border-radius: 6px;
+  padding: 6px 10px;
+  cursor: pointer;
+  font-size: 14px;
+  color: var(--dim);
+  flex-shrink: 0;
+}
+
+/* ── TABS ───────────────────────────────────────────────── */
+.tabs { display: flex; gap: 2px; overflow-x: auto; scrollbar-width: none; }
+.tabs::-webkit-scrollbar { display: none; }
+.tab-btn {
+  flex: 1;
+  min-width: max-content;
+  padding: 9px 12px 10px;
+  border: none;
+  background: transparent;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-style: italic;
+  font-weight: 800;
+  font-size: 15px;
+  color: var(--dim);
+  cursor: pointer;
+  border-bottom: 3px solid transparent;
+  white-space: nowrap;
+}
+.tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+/* ── PAGE WRAPPER ───────────────────────────────────────── */
+.page { max-width: 680px; margin: 0 auto; padding-top: 16px; }
+
+/* ── WEEK CALENDAR ──────────────────────────────────────── */
+.week-cal { display: grid; grid-template-columns: repeat(7,1fr); gap: 4px; margin-bottom: 14px; }
+.wcday { border-radius: 4px; padding: 8px 4px; text-align: center; background: var(--lift); border: 1px solid var(--edge); }
+.wcday.day-a { background: var(--accent); border-color: var(--accent); }
+.wcday.day-b { background: var(--lift); border: 2px solid var(--accent); }
+.wcday.day-off { opacity: .3; }
+.wcday-n { font-size: 8px; font-weight: 600; letter-spacing: .06em; color: var(--dim); text-transform: uppercase; }
+.wcday.day-a .wcday-n, .wcday.day-b .wcday-n { color: var(--accent); }
+.wcday.day-a .wcday-n { color: var(--bg); }
+.wcday-v { font-family: 'Barlow Condensed', sans-serif; font-style: italic; font-weight: 800; font-size: 20px; line-height: 1.1; margin-top: 3px; }
+.wcday.day-a .wcday-v { color: var(--bg); }
+.wcday.day-b .wcday-v { color: var(--accent); }
+.wcday.day-off .wcday-v { font-size: 14px; color: var(--dim); }
+
+/* ── SESSION HEADER ─────────────────────────────────────── */
+.session-label { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+.session-badge { font-family: 'Barlow Condensed', sans-serif; font-style: italic; font-weight: 800; font-size: 32px; color: var(--accent); line-height: 1; }
+.session-info { font-size: 12px; color: var(--dim); line-height: 1.5; }
+.session-info b { color: var(--text); }
+
+/* ── EXERCISE CARD ──────────────────────────────────────── */
+.ex-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 24px; }
+.ex-card { background: var(--surface); border: 1px solid var(--edge); border-radius: 8px; overflow: hidden; }
+.ex-head { display: grid; grid-template-columns: 64px 1fr auto; align-items: center; gap: 10px; padding: 10px 14px; cursor: pointer; user-select: none; -webkit-tap-highlight-color: transparent; }
+.ex-head:hover { background: var(--lift); }
+.ex-anim { width: 56px; height: 56px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+.ex-anim svg { width: 56px; height: 56px; }
+.ex-name-row { min-width: 0; }
+.ex-name { font-weight: 600; font-size: 14px; line-height: 1.3; }
+.ex-tags { display: flex; flex-wrap: wrap; gap: 3px; margin-top: 3px; }
+.tag { display: inline-block; padding: 1px 6px; border-radius: 3px; font-size: 9px; font-weight: 600; letter-spacing: .03em; white-space: nowrap; }
+.tag-m { background: var(--accent-bg); color: var(--accent); border: 1px solid var(--accent); }
+.tag-b { background: rgba(120,180,255,.12); color: #5599DD; border: 1px solid rgba(120,180,255,.25); }
+.tag-c { background: rgba(180,130,255,.1); color: #9966CC; border: 1px solid rgba(180,130,255,.2); }
+.tag-p { background: rgba(255,200,80,.1); color: var(--warn); border: 1px solid rgba(255,200,80,.25); font-size: 9px; }
+.ex-chevron { font-size: 12px; color: var(--dim); transition: transform .2s; flex-shrink: 0; }
+.ex-card.open .ex-chevron { transform: rotate(180deg); }
+.ex-body { display: none; border-top: 1px solid var(--edge); padding: 12px 14px; }
+.ex-card.open .ex-body { display: block; }
+
+/* Sets grid */
+.ex-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 1px; background: var(--edge); border-radius: 4px; overflow: hidden; margin-bottom: 10px; }
+.ex-grid-cell { background: var(--lift); padding: 8px 6px; text-align: center; }
+.ex-grid-head { font-size: 9px; font-weight: 600; letter-spacing: .07em; text-transform: uppercase; color: var(--dim); background: var(--surface); }
+.ex-grid-val { font-family: 'Barlow Condensed', sans-serif; font-weight: 600; font-size: 17px; color: var(--text); line-height: 1; }
+.ex-grid-sub { font-size: 9px; color: var(--dim); margin-top: 1px; }
+
+.prog-rule { background: var(--accent-bg); border-left: 2px solid var(--accent); padding: 7px 10px; border-radius: 0 4px 4px 0; font-size: 12px; color: var(--dim); line-height: 1.6; margin-bottom: 8px; }
+.prog-rule b { color: var(--text); font-weight: 600; }
+.tech-note { font-size: 12px; color: var(--dim); line-height: 1.6; padding-top: 8px; border-top: 1px solid var(--edge); }
+.tech-note b { color: var(--text); font-weight: 500; }
+
+/* ── PROGRESIÓN TAB ─────────────────────────────────────── */
+.prog-section { margin-bottom: 22px; }
+.section-title { font-family: 'Barlow Condensed', sans-serif; font-style: italic; font-weight: 800; font-size: 18px; color: var(--text); margin-bottom: 8px; padding-bottom: 5px; border-bottom: 2px solid var(--accent); display: inline-block; }
+.muscle-map { background: var(--surface); border: 1px solid var(--edge); border-radius: 8px; padding: 14px; margin-bottom: 16px; }
+.muscle-rows { display: flex; flex-direction: column; gap: 6px; }
+.muscle-row { display: flex; align-items: center; gap: 8px; }
+.muscle-name { font-size: 12px; color: var(--dim); min-width: 90px; flex-shrink: 0; }
+.muscle-bar-track { flex: 1; height: 5px; background: var(--edge); border-radius: 3px; overflow: hidden; }
+.muscle-bar-fill { height: 100%; border-radius: 3px; background: var(--accent); }
+.muscle-freq { font-size: 10px; color: var(--accent); font-weight: 600; min-width: 24px; text-align: right; }
+.weight-table-wrap { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; font-size: 12px; min-width: 340px; }
+thead th { text-align: left; padding: 7px 9px; font-size: 9px; font-weight: 700; letter-spacing: .07em; text-transform: uppercase; color: var(--bg); background: var(--accent); }
+tbody tr { border-bottom: 1px solid var(--edge); }
+tbody tr:last-child { border-bottom: none; }
+tbody td { padding: 7px 9px; color: var(--text); vertical-align: middle; }
+tbody tr:hover { background: var(--lift); }
+.td-current { background: var(--accent-bg) !important; font-weight: 600; }
+.badge { display: inline-block; padding: 2px 6px; border-radius: 3px; font-size: 10px; font-weight: 600; }
+.badge-now { background: var(--accent-bg); color: var(--accent); border: 1px solid var(--accent); }
+.badge-next { background: var(--lift); color: var(--dim); border: 1px solid var(--edge); }
+.prog-banner { background: var(--accent-bg); border: 1px solid var(--accent); border-radius: 6px; padding: 10px 12px; margin-bottom: 8px; display: flex; gap: 9px; align-items: flex-start; }
+.prog-banner-icon { font-size: 16px; flex-shrink: 0; line-height: 1.4; }
+.prog-banner-text { font-size: 12px; color: var(--dim); line-height: 1.55; }
+.prog-banner-text b { color: var(--text); font-weight: 600; }
+
+/* ── REGISTRO TAB ───────────────────────────────────────── */
+.reg-top { display: flex; gap: 10px; margin-bottom: 14px; flex-wrap: wrap; }
+.reg-btn { flex: 1; min-width: 140px; padding: 12px 16px; border: none; border-radius: 8px; font-family: 'Barlow Condensed', sans-serif; font-style: italic; font-weight: 800; font-size: 17px; cursor: pointer; transition: opacity .15s; }
+.reg-btn-main { background: var(--accent); color: var(--bg); }
+.reg-btn-skip { background: var(--lift); color: var(--dim); border: 1px solid var(--edge); }
+.reg-btn:hover { opacity: .85; }
+.reg-btn:disabled { opacity: .4; cursor: not-allowed; }
+
+/* Calendar */
+.cal-section { margin-bottom: 22px; }
+.cal-nav { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+.cal-nav-btn { background: var(--lift); border: 1px solid var(--edge); border-radius: 6px; padding: 5px 12px; cursor: pointer; font-size: 14px; color: var(--text); }
+.cal-year { font-family: 'Barlow Condensed', sans-serif; font-style: italic; font-weight: 800; font-size: 22px; color: var(--text); }
+.cal-months { display: flex; flex-direction: column; gap: 14px; }
+.cal-month { }
+.cal-month-name { font-size: 10px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--dim); margin-bottom: 5px; }
+.cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 3px; }
+.cal-day-label { font-size: 8px; font-weight: 600; color: var(--dim); text-align: center; padding: 2px 0; }
+.cal-day { aspect-ratio: 1; border-radius: 3px; background: var(--cal-empty); cursor: default; position: relative; }
+.cal-day.future { background: transparent; border: 1px solid var(--edge); opacity: .3; }
+.cal-day.empty-slot { background: transparent; }
+.cal-day.trained-full { background: var(--cal-green); }
+.cal-day.trained-partial { background: var(--cal-yellow); }
+.cal-day.rest-day { background: var(--cal-red); opacity: .7; }
+.cal-day.today { outline: 2px solid var(--accent); outline-offset: 1px; }
+.cal-legend { display: flex; gap: 14px; flex-wrap: wrap; margin-top: 10px; }
+.cal-legend-item { display: flex; align-items: center; gap: 5px; font-size: 11px; color: var(--dim); }
+.cal-legend-dot { width: 10px; height: 10px; border-radius: 2px; }
+
+/* Historial list */
+.hist-list { display: flex; flex-direction: column; gap: 8px; }
+.hist-card { background: var(--surface); border: 1px solid var(--edge); border-radius: 8px; overflow: hidden; }
+.hist-head { display: flex; align-items: center; gap: 10px; padding: 10px 14px; cursor: pointer; }
+.hist-head:hover { background: var(--lift); }
+.hist-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+.hist-date { font-weight: 600; font-size: 13px; flex: 1; }
+.hist-summary { font-size: 11px; color: var(--dim); }
+.hist-body { display: none; border-top: 1px solid var(--edge); padding: 10px 14px; font-size: 12px; }
+.hist-card.open .hist-body { display: block; }
+.hist-ex { margin-bottom: 8px; }
+.hist-ex-name { font-weight: 600; color: var(--text); margin-bottom: 3px; }
+.hist-series { display: flex; flex-wrap: wrap; gap: 4px; }
+.hist-serie-chip { background: var(--lift); border: 1px solid var(--edge); border-radius: 4px; padding: 2px 7px; font-size: 11px; color: var(--dim); }
+
+/* ── SESIÓN MODAL ───────────────────────────────────────── */
+.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.6); z-index: 100; display: flex; align-items: flex-end; padding-bottom: env(safe-area-inset-bottom, 0px); }
+.modal-overlay[hidden] { display: none !important; }
+.modal-panel { background: var(--surface); border-radius: 16px 16px 0 0; width: 100%; max-height: 90dvh; overflow-y: auto; padding: 20px max(16px, env(safe-area-inset-left, 0px)) 24px; }
+.modal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+.modal-title { font-family: 'Barlow Condensed', sans-serif; font-style: italic; font-weight: 800; font-size: 22px; color: var(--text); }
+.modal-close { background: var(--lift); border: 1px solid var(--edge); border-radius: 6px; padding: 5px 10px; cursor: pointer; font-size: 16px; color: var(--dim); }
+.modal-progress { display: flex; gap: 4px; margin-bottom: 16px; }
+.modal-prog-dot { flex: 1; height: 4px; border-radius: 2px; background: var(--edge); }
+.modal-prog-dot.done { background: var(--accent); }
+.modal-prog-dot.current { background: var(--accent); opacity: .5; }
+.modal-ex-anim { display: flex; justify-content: center; margin-bottom: 12px; }
+.modal-ex-anim svg { width: 100px; height: 100px; }
+.modal-ex-name { font-family: 'Barlow Condensed', sans-serif; font-style: italic; font-weight: 800; font-size: 20px; text-align: center; margin-bottom: 4px; }
+.modal-ex-target { font-size: 12px; color: var(--dim); text-align: center; margin-bottom: 14px; }
+.modal-series-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 14px; }
+.modal-serie { display: grid; grid-template-columns: 28px 1fr 1fr auto; gap: 8px; align-items: center; padding: 8px 10px; background: var(--lift); border-radius: 6px; border: 1px solid var(--edge); }
+.modal-serie-num { font-family: 'Barlow Condensed', sans-serif; font-weight: 800; font-size: 18px; color: var(--accent); text-align: center; }
+.modal-input { background: var(--surface); border: 1px solid var(--edge); border-radius: 5px; padding: 6px 8px; font-size: 14px; font-family: 'Barlow', sans-serif; color: var(--text); width: 100%; text-align: center; }
+.modal-input:focus { outline: 2px solid var(--accent); outline-offset: 1px; border-color: transparent; }
+.modal-input-label { font-size: 9px; color: var(--dim); text-align: center; margin-top: 2px; text-transform: uppercase; letter-spacing: .05em; }
+.modal-serie-ok { width: 26px; height: 26px; border-radius: 50%; background: var(--edge); border: none; cursor: pointer; font-size: 14px; display: flex; align-items: center; justify-content: center; }
+.modal-serie-ok.checked { background: var(--accent); }
+.modal-actions { display: flex; gap: 8px; }
+.modal-btn { flex: 1; padding: 12px; border: none; border-radius: 8px; font-family: 'Barlow Condensed', sans-serif; font-style: italic; font-weight: 800; font-size: 17px; cursor: pointer; }
+.modal-btn-next { background: var(--accent); color: var(--bg); }
+.modal-btn-skip { background: var(--lift); color: var(--dim); border: 1px solid var(--edge); }
+
+/* ── CELEBRATION ────────────────────────────────────────── */
+.celebrate-panel { text-align: center; padding: 20px 0; }
+.celebrate-emoji { font-size: 64px; margin-bottom: 12px; animation: pop .4s cubic-bezier(.17,.67,.3,1.4); }
+@keyframes pop { from { transform: scale(0); } to { transform: scale(1); } }
+.celebrate-title { font-family: 'Barlow Condensed', sans-serif; font-style: italic; font-weight: 800; font-size: 32px; color: var(--accent); margin-bottom: 6px; }
+.celebrate-sub { font-size: 14px; color: var(--dim); margin-bottom: 16px; }
+.celebrate-stats { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-bottom: 20px; }
+.cel-stat { background: var(--lift); border: 1px solid var(--edge); border-radius: 8px; padding: 10px 16px; text-align: center; }
+.cel-stat-val { font-family: 'Barlow Condensed', sans-serif; font-weight: 800; font-size: 28px; color: var(--accent); line-height: 1; }
+.cel-stat-lbl { font-size: 10px; color: var(--dim); text-transform: uppercase; letter-spacing: .05em; margin-top: 2px; }
+.celebrate-quote { font-size: 13px; color: var(--dim); font-style: italic; border-left: 2px solid var(--accent); padding-left: 10px; margin-bottom: 16px; text-align: left; }
+.modal-btn-close { width: 100%; }
+
+/* ── SEMANAS TAB ─────────────────────────────────────────── */
+.sem-intro { background: var(--accent-bg); border: 1px solid var(--accent); border-radius: 8px; padding: 10px 14px; margin-bottom: 14px; font-size: 12px; color: var(--dim); line-height: 1.6; }
+.sem-intro b { color: var(--text); }
+.sem-session-block { margin-bottom: 28px; }
+.sem-session-title { font-family: 'Barlow Condensed', sans-serif; font-style: italic; font-weight: 800; font-size: 20px; color: var(--accent); margin-bottom: 12px; padding-bottom: 5px; border-bottom: 2px solid var(--accent); }
+.sem-ex-block { background: var(--surface); border: 1px solid var(--edge); border-radius: 8px; margin-bottom: 10px; overflow: hidden; }
+.sem-ex-head { display: flex; align-items: center; gap: 10px; padding: 10px 14px; background: var(--lift); border-bottom: 1px solid var(--edge); }
+.sem-ex-name { font-weight: 600; font-size: 13px; flex: 1; }
+.sem-ex-target { font-size: 10px; color: var(--dim); }
+.sem-table-wrap { overflow-x: auto; }
+.sem-table { border-collapse: collapse; width: 100%; min-width: 560px; font-size: 12px; }
+.sem-table th { background: var(--bg); color: var(--dim); font-size: 9px; font-weight: 700; letter-spacing: .07em; text-transform: uppercase; padding: 6px 8px; border-bottom: 1px solid var(--edge); text-align: center; white-space: nowrap; }
+.sem-table th.th-ex { text-align: left; min-width: 80px; }
+.sem-table td { padding: 5px 4px; border-bottom: 1px solid var(--edge); vertical-align: middle; }
+.sem-table tr:last-child td { border-bottom: none; }
+.sem-table .td-serie { font-size: 10px; color: var(--dim); padding-left: 10px; white-space: nowrap; }
+.sem-table .td-target { font-size: 10px; color: var(--accent); font-weight: 600; padding-left: 10px; text-align: center; white-space: nowrap; }
+.sem-cell { display: flex; flex-direction: column; gap: 2px; align-items: center; min-width: 56px; }
+.sem-input { width: 50px; background: var(--lift); border: 1px solid var(--edge); border-radius: 4px; padding: 4px 4px; font-size: 12px; font-family: 'Barlow', sans-serif; color: var(--text); text-align: center; }
+.sem-input:focus { outline: 2px solid var(--accent); outline-offset: 1px; border-color: transparent; background: var(--surface); }
+.sem-input.filled { background: var(--accent-bg); border-color: var(--accent); font-weight: 600; }
+.sem-input.filled-over { background: rgba(102,187,106,.15); border-color: var(--ok); font-weight: 600; }
+.sem-input-lbl { font-size: 8px; color: var(--dim); letter-spacing: .04em; }
+.sem-week-header { background: var(--accent); color: var(--bg); font-size: 9px; font-weight: 700; text-align: center; padding: 4px 6px; border-radius: 3px; white-space: nowrap; }
+.sem-week-date { font-size: 8px; font-weight: 400; opacity: .8; }
+
+/* ── INSTRUCCIONES MODAL ─────────────────────────────────── */
+.modal-steps { margin-bottom: 14px; }
+.modal-steps-title { font-size: 10px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--dim); margin-bottom: 8px; }
+.modal-step-row { display: flex; gap: 10px; align-items: flex-start; margin-bottom: 8px; }
+.modal-step-num { width: 22px; height: 22px; border-radius: 50%; background: var(--accent); color: var(--bg); font-family: 'Barlow Condensed', sans-serif; font-weight: 800; font-size: 13px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
+.modal-step-txt { font-size: 13px; color: var(--text); line-height: 1.5; }
+.modal-pro-tip { background: var(--accent-bg); border: 1px solid var(--accent); border-radius: 6px; padding: 8px 12px; margin-bottom: 14px; font-size: 12px; color: var(--dim); line-height: 1.55; }
+.modal-pro-tip b { color: var(--text); }
+
+/* ── INSTRUCCIONES EN TARJETA ───────────────────────────── */
+.ex-steps { margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--edge); }
+.ex-steps-title { font-size: 10px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--dim); margin-bottom: 7px; }
+.ex-step-row { display: flex; gap: 8px; align-items: flex-start; margin-bottom: 6px; }
+.ex-step-num { width: 20px; height: 20px; border-radius: 50%; background: var(--accent-bg); border: 1px solid var(--accent); color: var(--accent); font-family: 'Barlow Condensed', sans-serif; font-weight: 800; font-size: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.ex-step-txt { font-size: 12px; color: var(--dim); line-height: 1.5; }
+.ex-tip { background: var(--accent-bg); border-radius: 5px; padding: 6px 10px; margin-top: 8px; font-size: 11px; color: var(--dim); line-height: 1.5; }
+.ex-tip b { color: var(--accent); }
+
+/* ── RACHA ──────────────────────────────────────────────── */
+.streak-badge { display: inline-flex; align-items: center; gap: 6px; background: var(--lift); border: 1px solid var(--edge); border-radius: 20px; padding: 5px 12px; font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 14px; }
+.streak-badge .streak-fire { font-size: 16px; }
+.streak-badge.active { background: var(--accent-bg); border-color: var(--accent); color: var(--accent); }
+
+/* ── EXPORTAR/IMPORTAR ──────────────────────────────────── */
+.data-btns { display: flex; gap: 8px; margin-bottom: 14px; flex-wrap: wrap; }
+.data-btn { flex: 1; min-width: 120px; padding: 10px 14px; border: 1px solid var(--edge); border-radius: 8px; background: var(--lift); color: var(--dim); font-family: 'Barlow Condensed', sans-serif; font-style: italic; font-weight: 800; font-size: 15px; cursor: pointer; text-align: center; }
+.data-btn:hover { background: var(--surface); color: var(--text); }
+
+/* ── BOTTOM PAD ─────────────────────────────────────────── */
+.bottom-pad { height: max(32px, env(safe-area-inset-bottom, 0px)); }
+
+/* ── RESPONSIVE ─────────────────────────────────────────── */
+@media (max-width: 420px) {
+  .ex-grid { grid-template-columns: repeat(2,1fr); }
+  .modal-serie { grid-template-columns: 24px 1fr 1fr auto; gap: 5px; }
+}
+</style>
+
+<!-- ════════════════ HEADER ════════════════════════════ -->
+<header class="app-header">
+  <div class="header-row">
+    <div>
+      <div class="header-title">Rutina <span>David</span> v3</div>
+      <div class="header-sub">Bywell 20 kg · MEV→MAV · Registro diario</div>
+    </div>
+    <button class="theme-btn" id="theme-toggle">☀️</button>
+  </div>
+  <div class="tabs">
+    <button class="tab-btn active" data-tab="a">Sesión A</button>
+    <button class="tab-btn" data-tab="b">Sesión B</button>
+    <button class="tab-btn" data-tab="prog">Progresión</button>
+    <button class="tab-btn" data-tab="reg">Registro</button>
+    <button class="tab-btn" data-tab="semanas">📈 Semanas</button>
+  </div>
+</header>
+
+<!-- ════════════════ MAIN ══════════════════════════════ -->
+<main class="page">
+
+  <!-- WEEK CAL -->
+  <div class="week-cal">
+    <div class="wcday day-off"><div class="wcday-n">Lun</div><div class="wcday-v">–</div></div>
+    <div class="wcday day-off"><div class="wcday-n">Mar</div><div class="wcday-v">–</div></div>
+    <div class="wcday day-a"><div class="wcday-n">Mié</div><div class="wcday-v">A</div></div>
+    <div class="wcday day-b"><div class="wcday-n">Jue</div><div class="wcday-v">B</div></div>
+    <div class="wcday day-off"><div class="wcday-n">Vie</div><div class="wcday-v">–</div></div>
+    <div class="wcday day-a"><div class="wcday-n">Sáb</div><div class="wcday-v">A</div></div>
+    <div class="wcday day-b"><div class="wcday-n">Dom</div><div class="wcday-v">B</div></div>
+  </div>
+
+  <!-- ════ TAB A ════════════════════════════════════════ -->
+  <div id="tab-a">
+    <div class="session-label">
+      <div class="session-badge">A</div>
+      <div class="session-info"><b>Miércoles · Sábado</b><br>Pecho · Espalda · Isquios · Bíceps · Gemelos</div>
+    </div>
+    <div class="ex-list" id="exlist-a">
+      <!-- ejercicios A inyectados por JS -->
+    </div>
+  </div>
+
+  <!-- ════ TAB B ════════════════════════════════════════ -->
+  <div id="tab-b" hidden>
+    <div class="session-label">
+      <div class="session-badge">B</div>
+      <div class="session-info"><b>Jueves · Domingo</b><br>Hombros (3 cabezas) · Cuádriceps · Tríceps · Curl martillo · Core</div>
+    </div>
+    <div class="ex-list" id="exlist-b">
+      <!-- ejercicios B inyectados por JS -->
+    </div>
+  </div>
+
+  <!-- ════ TAB PROGRESIÓN ═══════════════════════════════ -->
+  <div id="tab-prog" hidden>
+
+    <div class="muscle-map">
+      <div style="font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--dim);margin-bottom:10px;">Distribución muscular semanal</div>
+      <div class="muscle-rows">
+        <div class="muscle-row"><div class="muscle-name">Pecho</div><div class="muscle-bar-track"><div class="muscle-bar-fill" style="width:65%"></div></div><div class="muscle-freq">2×</div></div>
+        <div class="muscle-row"><div class="muscle-name">Espalda</div><div class="muscle-bar-track"><div class="muscle-bar-fill" style="width:70%"></div></div><div class="muscle-freq">2×</div></div>
+        <div class="muscle-row"><div class="muscle-name">Hombros</div><div class="muscle-bar-track"><div class="muscle-bar-fill" style="width:80%"></div></div><div class="muscle-freq">2×</div></div>
+        <div class="muscle-row"><div class="muscle-name">Bíceps</div><div class="muscle-bar-track"><div class="muscle-bar-fill" style="width:60%"></div></div><div class="muscle-freq">2×</div></div>
+        <div class="muscle-row"><div class="muscle-name">Tríceps</div><div class="muscle-bar-track"><div class="muscle-bar-fill" style="width:60%"></div></div><div class="muscle-freq">2×</div></div>
+        <div class="muscle-row"><div class="muscle-name">Piernas</div><div class="muscle-bar-track"><div class="muscle-bar-fill" style="width:50%"></div></div><div class="muscle-freq">2×</div></div>
+        <div class="muscle-row"><div class="muscle-name">Gemelos</div><div class="muscle-bar-track"><div class="muscle-bar-fill" style="width:35%"></div></div><div class="muscle-freq">1×</div></div>
+        <div class="muscle-row"><div class="muscle-name">Core</div><div class="muscle-bar-track"><div class="muscle-bar-fill" style="width:30%"></div></div><div class="muscle-freq">1×</div></div>
+      </div>
+    </div>
+
+    <div class="prog-section">
+      <div class="section-title">Escalera Bywell 20 kg</div>
+      <div class="weight-table-wrap">
+        <table>
+          <thead><tr><th>Config.</th><th>Peso/mano</th><th>Fase</th><th>Señal para subir</th></tr></thead>
+          <tbody>
+            <tr><td>Solo barra</td><td>~0.5 kg</td><td><span class="badge badge-next">Calentamiento</span></td><td>—</td></tr>
+            <tr><td>+2×1.25 kg</td><td>~3 kg</td><td><span class="badge badge-next">Aislamiento</span></td><td>15+ reps limpias</td></tr>
+            <tr><td>+2×2.5 kg</td><td>~5.5 kg</td><td><span class="badge badge-next">Transición</span></td><td>14–15 reps</td></tr>
+            <tr class="td-current"><td>+2×3 kg</td><td>~6.5 kg</td><td><span class="badge badge-now">⟵ Estás aquí</span></td><td>12–15 reps</td></tr>
+            <tr><td>+2×3+2×1.25 kg</td><td>~9 kg</td><td><span class="badge badge-next">MEV inicio</span></td><td>12–15 reps</td></tr>
+            <tr><td>+2×3+2×2.5 kg</td><td>~11.5 kg</td><td><span class="badge badge-next">MEV→MAV</span></td><td>12 reps</td></tr>
+            <tr><td>+4×3 kg</td><td>~12.5 kg</td><td><span class="badge badge-next">MAV zona</span></td><td>12 reps</td></tr>
+            <tr><td>+4×3+2×1.25 kg</td><td>~15 kg</td><td><span class="badge badge-next">MAV avanzado</span></td><td>12 reps</td></tr>
+            <tr><td>+4×3+2×2.5 kg</td><td>~17.5 kg</td><td><span class="badge badge-next">MAV máximo</span></td><td>12 reps</td></tr>
+            <tr><td>Máximo</td><td>~20 kg</td><td><span class="badge badge-next">Nuevo equipo</span></td><td>—</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="prog-section">
+      <div class="section-title">Cómo aplicar MEV → MAV</div>
+      <div class="prog-banner"><div class="prog-banner-icon">1️⃣</div><div class="prog-banner-text"><b>Subes de peso:</b> Empieza en el rango bajo (ej. 8 de 8–12 reps). El peso se siente difícil pero controlado.</div></div>
+      <div class="prog-banner"><div class="prog-banner-icon">2️⃣</div><div class="prog-banner-text"><b>Acumulas:</b> Semana a semana llegas a más reps. Respeta el RIR — parar cuando corresponde.</div></div>
+      <div class="prog-banner"><div class="prog-banner-icon">3️⃣</div><div class="prog-banner-text"><b>MAV alcanzado:</b> Logras el rango alto (ej. 12 de 8–12) con buena técnica <b>2 sesiones seguidas.</b></div></div>
+      <div class="prog-banner"><div class="prog-banner-icon">4️⃣</div><div class="prog-banner-text"><b>Subes ~2.5 kg:</b> Vuelves al rango bajo. El ciclo se repite hasta llegar a 20 kg.</div></div>
+    </div>
+
+    <div class="prog-section">
+      <div class="section-title">Guía RIR</div>
+      <div class="muscle-map" style="margin-bottom:0">
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          <div style="display:flex;gap:10px;align-items:flex-start;"><div style="font-size:18px;flex-shrink:0">🟢</div><div><div style="font-weight:600;font-size:13px;">RIR 2–3 — Compuestos pesados</div><div style="font-size:12px;color:var(--dim);margin-top:2px;">Press, remo, sentadilla, peso muerto. Parar con 2–3 reps de reserva.</div></div></div>
+          <div style="display:flex;gap:10px;align-items:flex-start;"><div style="font-size:18px;flex-shrink:0">🟡</div><div><div style="font-weight:600;font-size:13px;">RIR 1–2 — Aislamientos</div><div style="font-size:12px;color:var(--dim);margin-top:2px;">Curl, martillo, elevaciones, tríceps. Más cerca del fallo.</div></div></div>
+          <div style="display:flex;gap:10px;align-items:flex-start;"><div style="font-size:18px;flex-shrink:0">🔴</div><div><div style="font-weight:600;font-size:13px;">RIR 0 — Solo ocasionalmente</div><div style="font-size:12px;color:var(--dim);margin-top:2px;">Fallo técnico real. Solo última serie, máximo 1 vez por ejercicio.</div></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════ TAB REGISTRO ════════════════════════════════ -->
+  <div id="tab-reg" hidden>
+    <div id="streak-display" class="streak-badge">
+      <span class="streak-fire">🔥</span>
+      <span id="streak-text">Racha: 0 días</span>
+    </div>
+    <div class="reg-top">
+      <button class="reg-btn reg-btn-main" id="btn-start-session">⚡ Iniciar sesión de hoy</button>
+      <button class="reg-btn reg-btn-skip" id="btn-rest-day">😴 No entrené hoy</button>
+    </div>
+    <div class="data-btns">
+      <button class="data-btn" id="btn-export">⬇ Exportar mis datos</button>
+      <label class="data-btn" style="cursor:pointer;">⬆ Importar datos<input type="file" id="import-file" accept=".json" style="display:none"></label>
+    </div>
+
+    <div class="cal-section">
+      <div class="section-title">Calendario de racha</div>
+      <div class="cal-nav">
+        <button class="cal-nav-btn" id="cal-prev">◀</button>
+        <div class="cal-year" id="cal-year-label">2026</div>
+        <button class="cal-nav-btn" id="cal-next">▶</button>
+      </div>
+      <div class="cal-months" id="cal-months"></div>
+      <div class="cal-legend">
+        <div class="cal-legend-item"><div class="cal-legend-dot" style="background:var(--cal-green)"></div> Sesión completa (7/7)</div>
+        <div class="cal-legend-item"><div class="cal-legend-dot" style="background:var(--cal-yellow)"></div> Parcial</div>
+        <div class="cal-legend-item"><div class="cal-legend-dot" style="background:var(--cal-red);opacity:.7"></div> No entrenó</div>
+        <div class="cal-legend-item"><div class="cal-legend-dot" style="background:var(--cal-empty)"></div> Sin datos</div>
+      </div>
+    </div>
+
+    <div class="prog-section">
+      <div class="section-title">Historial de sesiones</div>
+      <div class="hist-list" id="hist-list">
+        <div style="text-align:center;padding:24px;color:var(--dim);font-size:13px;">Aún no hay sesiones registradas.<br>¡Empieza hoy! 💪</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════ TAB SEMANAS ════════════════════════════════ -->
+  <div id="tab-semanas" hidden>
+    <div class="sem-intro">
+      <b>Tracker semanal de progresión — 10 semanas</b><br>
+      Apunta cuántas reps y kg hiciste cada semana. Si el objetivo es 10 y solo te salieron 6, ponlo — la próxima semana intentas 7. Las celdas verdes = llegaste al rango objetivo. 💪
+    </div>
+    <div id="sem-content">
+      <!-- Generado por JS -->
+    </div>
+  </div>
+
+  <div class="bottom-pad"></div>
+</main>
+
+<!-- ════════════════ MODAL SESIÓN ══════════════════════ -->
+<div class="modal-overlay" id="session-modal" hidden>
+  <div class="modal-panel">
+    <div id="modal-content"></div>
+  </div>
+</div>
+
+<script>
+(function() {
+'use strict';
+
+// ═══════════════════════════════════════════════════
+// DATOS DE EJERCICIOS
+// ═══════════════════════════════════════════════════
+const SESSIONS = {
+  a: {
+    name: 'Sesión A',
+    days: 'Miércoles · Sábado',
+    exercises: [
+      {
+        id:'a1', name:'Press inclinado mancuerna 30–45°',
+        tool:'m', target:'Pecho superior · Deltoides ant.',
+        sets:4, reps:'8–12', rir:'2–3', rest:'2 min',
+        prog:'Peso inicial: 7.5 kg → cuando hagas 4×12 limpias sube a 10 kg.',
+        tech:'Codos a 45–60° del torso. Baja hasta que codos queden paralelos al suelo.',
+        steps:['Siéntate en un banco inclinado a 30–45° con una mancuerna en cada mano sobre tus muslos.','Lleva las mancuernas a los lados del pecho con codos a 45–60° del torso.','Empuja hacia arriba y ligeramente hacia el centro hasta casi extender los brazos.','Baja lento (2–3 seg) hasta sentir estiramiento en el pecho.'],
+        tip:'No bloquees los codos arriba del todo — mantén tensión en el pecho durante todo el recorrido.',
+        anim:'press-inclinado'
+      },
+      {
+        id:'a2', name:'Press plano mancuerna / Flexiones',
+        tool:'mc', target:'Pecho medio · Tríceps',
+        sets:3, reps:'10–15', rir:'2–3', rest:'90 s',
+        prog:'Press: empieza 7.5 kg. Flexiones: cuando hagas 3×15 añade peso en mochila.',
+        tech:'Press plano: tumbado, mancuernas a altura del pecho, empuja vertical. Flexiones: cuerpo recto, manos al ancho de hombros.',
+        steps:['Túmbate en el suelo o banco plano con una mancuerna en cada mano a la altura del pecho.','Codos a 45–60° del torso, muñecas neutras.','Empuja las mancuernas verticalmente hasta casi extender los brazos.','Baja controlado hasta que el pecho esté a punto de tocar el suelo o las mancuernas lleguen al pecho.'],
+        tip:'Si haces flexiones, mantén el cuerpo como una tabla rígida — sin hundir la cadera ni levantar el culo.',
+        anim:'press-plano'
+      },
+      {
+        id:'a3', name:'Remo mancuerna (un brazo)',
+        tool:'m', target:'Dorsal ancho · Romboides · Bíceps',
+        sets:4, reps:'10–12 c/lado', rir:'2–3', rest:'2 min',
+        prog:'Peso inicial: 7.5 kg → al llegar a 4×12 c/lado sube.',
+        tech:'Apoya mano y rodilla contraria. Tira el codo hacia atrás y arriba. Contrae el omóplato arriba.',
+        steps:['Apoya la mano y rodilla del mismo lado en un banco o silla — espalda recta y paralela al suelo.','Agarra la mancuerna con el brazo colgando, palma hacia adentro.','Tira el codo hacia atrás y arriba como si quisieras meter la mano en el bolsillo trasero.','Aprieta el omóplato arriba en el punto más alto, luego baja con control.'],
+        tip:'El movimiento lo inicia el codo, no la mano. Imagina que tienes el brazo en un cabestrillo — solo el codo sube.',
+        anim:'remo'
+      },
+      {
+        id:'a4', name:'Jalón al pecho (banda)',
+        tool:'b', target:'Dorsal · Bíceps sinérgico',
+        sets:3, reps:'12–15', rir:'1–2', rest:'90 s',
+        prog:'Cuando llegues a 3×15 cómodas → pasa a banda más resistente.',
+        tech:'Ancla banda arriba. Siéntate o arrodíllate. Jala hacia pecho con codos hacia abajo y afuera.',
+        steps:['Ancla la banda en un punto alto (puerta, barra, polea).','Siéntate o arrodíllate con los brazos extendidos sobre la cabeza sosteniendo la banda.','Jala la banda hacia el pecho llevando los codos hacia abajo y hacia afuera.','Aprieta el dorsal abajo, luego sube lento resistiendo la banda.'],
+        tip:'No uses el peso del cuerpo para jalarte. Si te recuestas demasiado, estás haciendo trampa.',
+        anim:'jalon'
+      },
+      {
+        id:'a5', name:'Curl bíceps mancuerna',
+        tool:'m', target:'Bíceps · Cabeza larga y corta',
+        sets:3, reps:'10–14', rir:'1–2', rest:'90 s',
+        prog:'Peso inicial: 7.5 kg → llegar a 3×14 limpias, sube.',
+        tech:'Codos pegados al torso. Sube 1 seg, baja 2 seg. Supina la muñeca al subir. Aprieta bíceps arriba.',
+        steps:['Párate derecho con una mancuerna en cada mano, palmas hacia adelante, codos pegados al torso.','Sube las mancuernas hacia los hombros en 1 segundo, girando la muñeca hacia afuera al final.','Aprieta el bíceps en la parte alta por un momento.','Baja lento en 2–3 segundos hasta extender casi completamente el brazo.'],
+        tip:'No balancees el torso para ayudarte. Si necesitas impulso, el peso está muy pesado — baja.',
+        anim:'curl'
+      },
+      {
+        id:'a6', name:'Peso muerto rumano',
+        tool:'m', target:'Isquiotibiales · Glúteos · Lumbar',
+        sets:3, reps:'10–12', rir:'2–3', rest:'2 min',
+        prog:'Peso inicial: 7.5 kg → llegar a 3×12, sube. Escalarás rápido aquí.',
+        tech:'Bisagra de cadera — empuja el culo hacia atrás. Las mancuernas bajan rozando las piernas. Sientes el tirón en la parte trasera del muslo = correcto.',
+        steps:['Párate derecho con mancuernas frente a los muslos, pies al ancho de cadera.','Empuja las caderas hacia atrás (no dobles las rodillas como en sentadilla) mientras bajas las mancuernas por las piernas.','Baja hasta sentir el tirón en la parte trasera del muslo — generalmente hasta las espinillas.','Aprieta los glúteos y empuja las caderas hacia adelante para volver arriba.'],
+        tip:'La espalda debe estar recta todo el tiempo. Si la sientes curva, estás bajando demasiado.',
+        anim:'rdl'
+      },
+      {
+        id:'a7', name:'Elevaciones de talones',
+        tool:'m', target:'Gemelos · Sóleo',
+        sets:3, reps:'15–25', rir:'1–2', rest:'60 s',
+        prog:'Empieza sin peso → llegar a 3×25, añade mancuerna en cada mano.',
+        tech:'Usa un escalón o borde para mayor rango. Pausa de 1 seg abajo y 1 seg arriba — sin rebote.',
+        steps:['Párate en el borde de un escalón con la parte delantera del pie — los talones en el aire.','Baja los talones lentamente hasta sentir el estiramiento máximo del gemelo.','Sube en punta de pie lo más alto que puedas y mantén 1 segundo arriba.','Baja de nuevo lento. Sin rebotar abajo.'],
+        tip:'El rango completo (bajar hasta abajo) es lo que hace crecer el gemelo. A medias no sirve.',
+        anim:'calf'
+      }
+    ]
+  },
+  b: {
+    name: 'Sesión B',
+    days: 'Jueves · Domingo',
+    exercises: [
+      {
+        id:'b1', name:'Press de hombros mancuerna',
+        tool:'m', target:'Deltoides ant. · Deltoides med. · Tríceps',
+        sets:4, reps:'8–12', rir:'2–3', rest:'2 min',
+        prog:'Peso inicial: 7.5 kg → llegar a 4×12, sube.',
+        tech:'Mancuernas a altura de orejas, codos a 90°. Empuja arriba sin bloquear codos. No arquees la espalda baja.',
+        steps:['Siéntate en una silla o banco con la espalda apoyada. Mancuernas a altura de las orejas, codos a 90°.','Empuja ambas mancuernas hacia arriba hasta casi extender los brazos — sin bloquear codos.','Baja lento hasta la posición inicial sin que los codos bajen de los 90°.','Repite sin usar el impulso de las piernas — control total.'],
+        tip:'Si arqueas la espalda para empujar, el peso está muy pesado. Siéntate derecho siempre.',
+        anim:'press-hombros'
+      },
+      {
+        id:'b2', name:'Elevaciones laterales mancuerna',
+        tool:'m', target:'Deltoides medial — anchura visual',
+        sets:3, reps:'12–20', rir:'1–2', rest:'60 s',
+        prog:'Empieza con 7.5 kg. Nunca uses impulso — mejor ligero que con trampa.',
+        tech:'Leve flexión de codo. Sube hasta brazos paralelos al suelo — no más. Dedo meñique más arriba que el pulgar.',
+        steps:['Párate derecho con una mancuerna en cada mano a los lados del cuerpo.','Dobla levemente los codos (15–20°) y mantenlos así todo el movimiento.','Sube los brazos hacia los lados hasta quedar paralelos al suelo — como si quisieras volar.','Dedo meñique un poco más arriba que el pulgar. Baja lento con control.'],
+        tip:'Solo hasta paralelo al suelo — subir más no activa más el deltoides medial, solo lastiما el hombro.',
+        anim:'lateral'
+      },
+      {
+        id:'b3', name:'Face pull (banda)',
+        tool:'b', target:'Deltoides posterior · Manguito rotador',
+        sets:3, reps:'15–20', rir:'1–2', rest:'60 s',
+        prog:'Insustituible para la 3ª cabeza del deltoides. Cuando llegues a 3×20 → banda más resistente.',
+        tech:'Ancla banda a altura de la cara. Jala hacia la cara separando codos hacia afuera y arriba. Codos por encima de muñecas al final.',
+        steps:['Ancla la banda a la altura de tu cara en una puerta o barra.','Agarra los extremos con ambas manos, palmas hacia abajo o hacia adentro.','Jala hacia tu cara separando los codos hacia afuera y arriba — como un "W" con los brazos.','Al final del movimiento los codos deben estar por encima de las muñecas. Regresa lento.'],
+        tip:'Este ejercicio salva los hombros. Hazlo bien aunque el peso sea ridículo — la técnica importa más aquí.',
+        anim:'facepull'
+      },
+      {
+        id:'b4', name:'Sentadilla goblet mancuerna',
+        tool:'m', target:'Cuádriceps · Glúteos · Core',
+        sets:3, reps:'10–15', rir:'2–3', rest:'2 min',
+        prog:'Peso inicial: 7.5 kg. Sostén una mancuerna vertical frente al pecho con ambas manos.',
+        tech:'Pies al ancho de hombros, puntas abiertas. Baja hasta muslos paralelos al suelo. Rodillas siguen dirección de pies. Pecho arriba siempre.',
+        steps:['Sostén una mancuerna verticalmente frente al pecho con ambas manos, codos apuntando al suelo.','Pies al ancho de hombros o un poco más abiertos, puntas hacia afuera 30–45°.','Baja como si fueras a sentarte en una silla — pecho arriba, rodillas siguiendo la dirección de los pies.','Baja hasta que los muslos estén paralelos al suelo o más. Sube empujando el suelo.'],
+        tip:'La mancuerna frente al pecho te ayuda a mantener el torso recto. Es el mejor ejercicio para aprender a sentarse bien.',
+        anim:'goblet'
+      },
+      {
+        id:'b5', name:'Curl martillo mancuerna',
+        tool:'m', target:'Braquial · Braquiorradial · Grosor del brazo',
+        sets:3, reps:'10–14', rir:'1–2', rest:'90 s',
+        prog:'El mejor ejercicio para grosor de brazo. Peso inicial: 7.5 kg.',
+        tech:'Agarre neutro — pulgar al techo. Codos fijos al torso. NO supinas la muñeca. Palma mira hacia adentro todo el tiempo.',
+        steps:['Párate con mancuernas a los lados, agarre neutro — pulgar apuntando al techo, palma hacia adentro.','Codos pegados al torso. Sube las mancuernas sin girar las muñecas — el pulgar siempre al techo.','Lleva las mancuernas hasta los hombros y aprieta el músculo arriba.','Baja lento 2–3 segundos. Los codos no se mueven hacia atrás.'],
+        tip:'La diferencia con el curl normal es NO girar la muñeca. Eso activa el braquial, que es lo que da grosor al brazo.',
+        anim:'martillo'
+      },
+      {
+        id:'b6', name:'Tríceps jalón + sobre cabeza (superset)',
+        tool:'b', target:'Tríceps — las 3 cabezas · 60% del brazo',
+        sets:3, reps:'10–15', rir:'1–2', rest:'90 s',
+        prog:'Superset: 10–15 jalones + 10–15 sobre cabeza sin descanso entre ellos. 90 s entre parejas.',
+        tech:'Jalón: codos fijos, extiende completamente. Sobre cabeza: banda bajo el pie, extiende hacia arriba activando la cabeza larga.',
+        steps:['JALÓN: Ancla banda arriba. Codos fijos a los lados del torso. Extiende hacia abajo hasta bloquear. Vuelve lento.','Termina tus reps de jalón sin descanso y pasa al sobre cabeza.','SOBRE CABEZA: Pisa la banda con un pie. Lleva las manos detrás de la cabeza con codos apuntando al techo.','Extiende los brazos hacia arriba. Pausa arriba. Baja lento hasta el inicio.'],
+        tip:'El sobre cabeza estira la cabeza larga del tríceps — es lo que más rellena la parte trasera del brazo. No te lo saltes.',
+        anim:'triceps'
+      },
+      {
+        id:'b7', name:'Plancha abdominal',
+        tool:'c', target:'Core profundo · Estabilizadores lumbares',
+        sets:3, reps:'30–50 s', rir:'—', rest:'60 s',
+        prog:'Meta 4 semanas: 3×50 s continuos → luego plancha con elevación de pierna alternada.',
+        tech:'Antebrazos en suelo, cuerpo recto de cabeza a talones. Aprieta glúteos + abdomen simultáneamente.',
+        steps:['Apoya antebrazos en el suelo con codos debajo de los hombros. Punta de pies en el suelo.','Levanta el cuerpo formando una línea recta de cabeza a talones — sin hundir la cadera ni levantar el culo.','Aprieta el abdomen como si fuera a pegarte un golpe y aprieta los glúteos también.','Respira normal. Mantén la posición el tiempo indicado.'],
+        tip:'Si la cadera cae, mejor parar y descansar que aguantar con mala forma. 20 seg bien valen más que 60 seg mal.',
+        anim:'plancha'
+      }
+    ]
+  }
+};
+
+// ═══════════════════════════════════════════════════
+// SVG ANIMADOS
+// ═══════════════════════════════════════════════════
+function getSVG(type, size=56) {
+  const s = size, h = s, w = s;
+  const svgs = {
+    'press-inclinado': `<svg viewBox="0 0 56 56" width="${w}" height="${h}">
+      <style>
+        .pi-body{animation:pi-lean 1.6s ease-in-out infinite}
+        .pi-arm{transform-origin:22px 30px;animation:pi-push 1.6s ease-in-out infinite}
+        @keyframes pi-lean{0%,100%{transform:rotate(-30deg) translateY(0)}50%{transform:rotate(-30deg) translateY(-3px)}}
+        @keyframes pi-push{0%,100%{transform:rotate(0deg)}50%{transform:rotate(-20deg)}}
+      </style>
+      <g class="pi-body" style="transform-origin:28px 32px">
+        <rect x="18" y="28" width="20" height="10" rx="3" fill="var(--accent)" opacity=".9"/>
+        <circle cx="28" cy="22" r="6" fill="var(--accent)"/>
+        <rect x="24" y="34" width="4" height="12" rx="2" fill="var(--dim)"/>
+        <rect x="30" y="34" width="4" height="12" rx="2" fill="var(--dim)"/>
+      </g>
+      <g class="pi-arm">
+        <rect x="8" y="26" width="16" height="3" rx="1.5" fill="var(--text)" opacity=".6"/>
+        <rect x="32" y="26" width="16" height="3" rx="1.5" fill="var(--text)" opacity=".6"/>
+        <circle cx="6" cy="27.5" r="3" fill="var(--dim)"/>
+        <circle cx="50" cy="27.5" r="3" fill="var(--dim)"/>
+      </g>
+    </svg>`,
+    'press-plano': `<svg viewBox="0 0 56 56" width="${w}" height="${h}">
+      <style>
+        .pp-arm{transform-origin:28px 28px;animation:pp-push 1.6s ease-in-out infinite}
+        @keyframes pp-push{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+      </style>
+      <rect x="8" y="36" width="40" height="4" rx="2" fill="var(--dim)" opacity=".4"/>
+      <rect x="14" y="32" width="28" height="8" rx="3" fill="var(--accent)" opacity=".9"/>
+      <circle cx="28" cy="26" r="6" fill="var(--accent)"/>
+      <g class="pp-arm">
+        <rect x="6" y="22" width="18" height="3" rx="1.5" fill="var(--text)" opacity=".7"/>
+        <rect x="32" y="22" width="18" height="3" rx="1.5" fill="var(--text)" opacity=".7"/>
+        <circle cx="4" cy="23.5" r="3" fill="var(--dim)"/>
+        <circle cx="52" cy="23.5" r="3" fill="var(--dim)"/>
+      </g>
+    </svg>`,
+    'remo': `<svg viewBox="0 0 56 56" width="${w}" height="${h}">
+      <style>
+        .rm-arm{transform-origin:20px 28px;animation:rm-pull 1.6s ease-in-out infinite}
+        @keyframes rm-pull{0%,100%{transform:rotate(0deg)}50%{transform:rotate(-30deg)}}
+      </style>
+      <rect x="6" y="40" width="20" height="4" rx="2" fill="var(--dim)" opacity=".4"/>
+      <rect x="10" y="26" width="18" height="8" rx="3" fill="var(--accent)" opacity=".9" transform="rotate(-15 19 30)"/>
+      <circle cx="18" cy="20" r="6" fill="var(--accent)"/>
+      <rect x="28" y="30" width="4" height="14" rx="2" fill="var(--dim)"/>
+      <g class="rm-arm">
+        <rect x="20" y="27" width="22" height="3" rx="1.5" fill="var(--text)" opacity=".7"/>
+        <circle cx="44" cy="28.5" r="4" fill="var(--dim)"/>
+      </g>
+    </svg>`,
+    'jalon': `<svg viewBox="0 0 56 56" width="${w}" height="${h}">
+      <style>
+        .jl-arms{transform-origin:28px 28px;animation:jl-pull 1.6s ease-in-out infinite}
+        @keyframes jl-pull{0%,100%{transform:translateY(0)}50%{transform:translateY(6px)}}
+      </style>
+      <rect x="4" y="4" width="48" height="4" rx="2" fill="var(--dim)" opacity=".5"/>
+      <rect x="26" y="4" width="4" height="14" rx="2" fill="var(--dim)" opacity=".4"/>
+      <g class="jl-arms">
+        <circle cx="28" cy="32" r="6" fill="var(--accent)"/>
+        <rect x="18" y="28" width="10" height="8" rx="3" fill="var(--accent)" opacity=".9"/>
+        <rect x="30" y="28" width="8" height="8" rx="3" fill="var(--accent)" opacity=".9"/>
+        <rect x="10" y="18" width="3" height="12" rx="1.5" fill="var(--text)" opacity=".6" transform="rotate(-25 11.5 24)"/>
+        <rect x="43" y="18" width="3" height="12" rx="1.5" fill="var(--text)" opacity=".6" transform="rotate(25 44.5 24)"/>
+      </g>
+    </svg>`,
+    'curl': `<svg viewBox="0 0 56 56" width="${w}" height="${h}">
+      <style>
+        .cu-fore{transform-origin:28px 36px;animation:cu-curl 1.6s ease-in-out infinite}
+        @keyframes cu-curl{0%,100%{transform:rotate(20deg)}50%{transform:rotate(-50deg)}}
+      </style>
+      <rect x="20" y="14" width="16" height="24" rx="4" fill="var(--accent)" opacity=".9"/>
+      <circle cx="28" cy="10" r="6" fill="var(--accent)"/>
+      <g class="cu-fore">
+        <rect x="22" y="36" width="12" height="14" rx="3" fill="var(--accent)" opacity=".8"/>
+        <circle cx="28" cy="52" r="4" fill="var(--dim)"/>
+      </g>
+    </svg>`,
+    'rdl': `<svg viewBox="0 0 56 56" width="${w}" height="${h}">
+      <style>
+        .rdl-body{transform-origin:28px 28px;animation:rdl-hinge 2s ease-in-out infinite}
+        @keyframes rdl-hinge{0%,100%{transform:rotate(0deg)}50%{transform:rotate(40deg)}}
+      </style>
+      <g class="rdl-body">
+        <circle cx="28" cy="10" r="6" fill="var(--accent)"/>
+        <rect x="24" y="14" width="8" height="20" rx="3" fill="var(--accent)" opacity=".9"/>
+        <rect x="8" y="32" width="3" height="14" rx="1.5" fill="var(--text)" opacity=".6"/>
+        <rect x="45" y="32" width="3" height="14" rx="1.5" fill="var(--text)" opacity=".6"/>
+        <circle cx="6" cy="47" r="4" fill="var(--dim)"/>
+        <circle cx="50" cy="47" r="4" fill="var(--dim)"/>
+      </g>
+      <rect x="18" y="44" width="4" height="12" rx="2" fill="var(--dim)"/>
+      <rect x="34" y="44" width="4" height="12" rx="2" fill="var(--dim)"/>
+    </svg>`,
+    'calf': `<svg viewBox="0 0 56 56" width="${w}" height="${h}">
+      <style>
+        .cf-body{transform-origin:28px 36px;animation:cf-raise 1.4s ease-in-out infinite}
+        @keyframes cf-raise{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+      </style>
+      <g class="cf-body">
+        <circle cx="28" cy="10" r="6" fill="var(--accent)"/>
+        <rect x="22" y="14" width="12" height="18" rx="3" fill="var(--accent)" opacity=".9"/>
+        <rect x="20" y="28" width="6" height="16" rx="3" fill="var(--accent)" opacity=".8"/>
+        <rect x="30" y="28" width="6" height="16" rx="3" fill="var(--accent)" opacity=".8"/>
+        <circle cx="15" cy="10" r="3" fill="var(--dim)"/>
+        <circle cx="41" cy="10" r="3" fill="var(--dim)"/>
+        <rect x="10" y="10" width="6" height="3" rx="1" fill="var(--text)" opacity=".5"/>
+        <rect x="40" y="10" width="6" height="3" rx="1" fill="var(--text)" opacity=".5"/>
+      </g>
+      <rect x="10" y="50" width="36" height="4" rx="2" fill="var(--dim)" opacity=".4"/>
+    </svg>`,
+    'press-hombros': `<svg viewBox="0 0 56 56" width="${w}" height="${h}">
+      <style>
+        .ph-arms{transform-origin:28px 28px;animation:ph-press 1.6s ease-in-out infinite}
+        @keyframes ph-press{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
+      </style>
+      <circle cx="28" cy="12" r="6" fill="var(--accent)"/>
+      <rect x="22" y="16" width="12" height="16" rx="3" fill="var(--accent)" opacity=".9"/>
+      <rect x="20" y="32" width="4" height="16" rx="2" fill="var(--dim)"/>
+      <rect x="32" y="32" width="4" height="16" rx="2" fill="var(--dim)"/>
+      <g class="ph-arms">
+        <rect x="4" y="22" width="16" height="3" rx="1.5" fill="var(--text)" opacity=".7"/>
+        <rect x="36" y="22" width="16" height="3" rx="1.5" fill="var(--text)" opacity=".7"/>
+        <circle cx="2" cy="23.5" r="3" fill="var(--dim)"/>
+        <circle cx="54" cy="23.5" r="3" fill="var(--dim)"/>
+      </g>
+    </svg>`,
+    'lateral': `<svg viewBox="0 0 56 56" width="${w}" height="${h}">
+      <style>
+        .lat-arms{transform-origin:28px 26px;animation:lat-raise 1.6s ease-in-out infinite}
+        @keyframes lat-raise{0%,100%{transform:rotate(0deg)}50%{transform:rotate(-35deg)}}
+      </style>
+      <circle cx="28" cy="10" r="6" fill="var(--accent)"/>
+      <rect x="22" y="14" width="12" height="18" rx="3" fill="var(--accent)" opacity=".9"/>
+      <rect x="22" y="30" width="4" height="14" rx="2" fill="var(--dim)"/>
+      <rect x="30" y="30" width="4" height="14" rx="2" fill="var(--dim)"/>
+      <g class="lat-arms" style="transform-origin:28px 26px">
+        <rect x="4" y="24" width="18" height="3" rx="1.5" fill="var(--text)" opacity=".7"/>
+        <rect x="34" y="24" width="18" height="3" rx="1.5" fill="var(--text)" opacity=".7"/>
+        <circle cx="2" cy="25.5" r="3" fill="var(--dim)"/>
+        <circle cx="54" cy="25.5" r="3" fill="var(--dim)"/>
+      </g>
+    </svg>`,
+    'facepull': `<svg viewBox="0 0 56 56" width="${w}" height="${h}">
+      <style>
+        .fp-arms{animation:fp-pull 1.6s ease-in-out infinite}
+        @keyframes fp-pull{0%,100%{transform:translateX(0)}50%{transform:translateX(8px)}}
+      </style>
+      <rect x="4" y="20" width="4" height="16" rx="2" fill="var(--dim)" opacity=".5"/>
+      <g class="fp-arms">
+        <circle cx="32" cy="14" r="6" fill="var(--accent)"/>
+        <rect x="26" y="18" width="14" height="12" rx="3" fill="var(--accent)" opacity=".9"/>
+        <rect x="20" y="20" width="3" height="10" rx="1.5" fill="var(--text)" opacity=".6" transform="rotate(-20 21.5 25)"/>
+        <rect x="36" y="20" width="3" height="10" rx="1.5" fill="var(--text)" opacity=".6" transform="rotate(20 37.5 25)"/>
+        <rect x="10" y="27" width="12" height="3" rx="1.5" fill="var(--text)" opacity=".6"/>
+        <rect x="26" y="30" width="4" height="16" rx="2" fill="var(--dim)"/>
+        <rect x="34" y="30" width="4" height="16" rx="2" fill="var(--dim)"/>
+      </g>
+    </svg>`,
+    'goblet': `<svg viewBox="0 0 56 56" width="${w}" height="${h}">
+      <style>
+        .gb-body{transform-origin:28px 30px;animation:gb-squat 2s ease-in-out infinite}
+        @keyframes gb-squat{0%,100%{transform:translateY(0) scaleY(1)}50%{transform:translateY(6px) scaleY(.85)}}
+      </style>
+      <g class="gb-body">
+        <circle cx="28" cy="10" r="6" fill="var(--accent)"/>
+        <rect x="22" y="14" width="12" height="14" rx="3" fill="var(--accent)" opacity=".9"/>
+        <circle cx="28" cy="24" r="5" fill="var(--dim)" opacity=".7"/>
+        <rect x="20" y="26" width="6" height="16" rx="3" fill="var(--accent)" opacity=".8" transform="rotate(-10 23 34)"/>
+        <rect x="30" y="26" width="6" height="16" rx="3" fill="var(--accent)" opacity=".8" transform="rotate(10 33 34)"/>
+      </g>
+    </svg>`,
+    'martillo': `<svg viewBox="0 0 56 56" width="${w}" height="${h}">
+      <style>
+        .ma-fore{transform-origin:28px 34px;animation:ma-curl 1.6s ease-in-out infinite}
+        @keyframes ma-curl{0%,100%{transform:rotate(25deg)}50%{transform:rotate(-45deg)}}
+      </style>
+      <rect x="20" y="12" width="16" height="24" rx="4" fill="var(--accent)" opacity=".9"/>
+      <circle cx="28" cy="8" r="6" fill="var(--accent)"/>
+      <g class="ma-fore">
+        <rect x="22" y="34" width="12" height="14" rx="3" fill="var(--accent)" opacity=".8"/>
+        <rect x="25" y="46" width="6" height="6" rx="2" fill="var(--dim)"/>
+        <rect x="22" y="48" width="12" height="3" rx="1.5" fill="var(--text)" opacity=".5"/>
+      </g>
+    </svg>`,
+    'triceps': `<svg viewBox="0 0 56 56" width="${w}" height="${h}">
+      <style>
+        .tr-fore{transform-origin:28px 22px;animation:tr-ext 1.6s ease-in-out infinite}
+        @keyframes tr-ext{0%,100%{transform:rotate(-40deg)}50%{transform:rotate(10deg)}}
+      </style>
+      <rect x="4" y="6" width="48" height="4" rx="2" fill="var(--dim)" opacity=".5"/>
+      <rect x="26" y="10" width="4" height="12" rx="2" fill="var(--dim)" opacity=".4"/>
+      <circle cx="28" cy="28" r="6" fill="var(--accent)"/>
+      <rect x="22" y="32" width="12" height="10" rx="3" fill="var(--accent)" opacity=".9"/>
+      <g class="tr-fore">
+        <rect x="24" y="20" width="8" height="16" rx="3" fill="var(--accent)" opacity=".8"/>
+        <rect x="22" y="35" width="12" height="4" rx="2" fill="var(--dim)" opacity=".6"/>
+      </g>
+    </svg>`,
+    'plancha': `<svg viewBox="0 0 56 56" width="${w}" height="${h}">
+      <style>
+        .pl-body{transform-origin:28px 32px;animation:pl-hold 2s ease-in-out infinite}
+        @keyframes pl-hold{0%,100%{transform:translateY(0)}50%{transform:translateY(-2px)}}
+      </style>
+      <g class="pl-body">
+        <ellipse cx="28" cy="28" rx="22" ry="5" fill="var(--accent)" opacity=".9"/>
+        <circle cx="8" cy="26" r="5" fill="var(--accent)"/>
+        <rect x="22" y="24" width="6" height="8" rx="2" fill="var(--accent)" opacity=".8"/>
+        <rect x="30" y="24" width="6" height="8" rx="2" fill="var(--accent)" opacity=".8"/>
+        <rect x="12" y="30" width="6" height="6" rx="2" fill="var(--dim)" opacity=".5"/>
+        <rect x="38" y="30" width="6" height="6" rx="2" fill="var(--dim)" opacity=".5"/>
+      </g>
+      <rect x="6" y="38" width="44" height="3" rx="1.5" fill="var(--dim)" opacity=".3"/>
+    </svg>`
+  };
+  return svgs[type] || svgs['press-inclinado'];
+}
+
+// ═══════════════════════════════════════════════════
+// STORAGE
+// ═══════════════════════════════════════════════════
+function loadData() {
+  try { return JSON.parse(localStorage.getItem('rutina-david-v3') || '{}'); } catch(_) { return {}; }
+}
+function saveData(d) {
+  try { localStorage.setItem('rutina-david-v3', JSON.stringify(d)); } catch(_) {}
+}
+let appData = loadData();
+
+function todayKey() {
+  const n = new Date();
+  return `${n.getFullYear()}-${String(n.getMonth()+1).padStart(2,'0')}-${String(n.getDate()).padStart(2,'0')}`;
+}
+function getTodaySession() {
+  const day = new Date().getDay(); // 0=Sun,1=Mon,...
+  if (day === 3 || day === 6) return 'a'; // Mié, Sáb
+  if (day === 4 || day === 0) return 'b'; // Jue, Dom
+  return null;
+}
+
+// ═══════════════════════════════════════════════════
+// RENDER EXERCISES
+// ═══════════════════════════════════════════════════
+function renderExList(session) {
+  const container = document.getElementById(`exlist-${session}`);
+  if (!container) return;
+  const exs = SESSIONS[session].exercises;
+  container.innerHTML = exs.map((ex, i) => `
+    <div class="ex-card" data-ex="${ex.id}">
+      <div class="ex-head">
+        <div class="ex-anim">${getSVG(ex.anim)}</div>
+        <div class="ex-name-row">
+          <div class="ex-name">${ex.name}</div>
+          <div class="ex-tags">
+            <span class="tag ${ex.tool==='m'?'tag-m':ex.tool==='b'?'tag-b':'tag-c'}">${ex.tool==='m'?'Mancuerna':ex.tool==='b'?'Banda':'Corporal'}</span>
+            <span class="tag tag-p">${ex.target}</span>
+          </div>
+        </div>
+        <div class="ex-chevron">▼</div>
+      </div>
+      <div class="ex-body">
+        <div class="ex-grid">
+          <div class="ex-grid-cell ex-grid-head">Series</div>
+          <div class="ex-grid-cell ex-grid-head">Reps</div>
+          <div class="ex-grid-cell ex-grid-head">RIR</div>
+          <div class="ex-grid-cell ex-grid-head">Descanso</div>
+          <div class="ex-grid-cell"><div class="ex-grid-val">${ex.sets}</div></div>
+          <div class="ex-grid-cell"><div class="ex-grid-val">${ex.reps}</div></div>
+          <div class="ex-grid-cell"><div class="ex-grid-val">${ex.rir}</div><div class="ex-grid-sub">reserva</div></div>
+          <div class="ex-grid-cell"><div class="ex-grid-val">${ex.rest}</div></div>
+        </div>
+        <div class="prog-rule"><b>Progresión:</b> ${ex.prog}</div>
+        ${ex.steps ? `
+        <div class="ex-steps">
+          <div class="ex-steps-title">Cómo hacerlo</div>
+          ${ex.steps.map((s,i) => `<div class="ex-step-row"><div class="ex-step-num">${i+1}</div><div class="ex-step-txt">${s}</div></div>`).join('')}
+          ${ex.tip ? `<div class="ex-tip"><b>💡 Pro tip:</b> ${ex.tip}</div>` : ''}
+        </div>
+        ` : `<div class="tech-note"><b>Técnica:</b> ${ex.tech}</div>`}
+      </div>
+    </div>
+  `).join('');
+  container.querySelectorAll('.ex-card').forEach(card => {
+    card.querySelector('.ex-head').addEventListener('click', () => {
+      const open = card.classList.toggle('open');
+      card.querySelector('.ex-chevron').textContent = open ? '▲' : '▼';
+    });
+  });
+}
+
+// ═══════════════════════════════════════════════════
+// CALENDAR
+// ═══════════════════════════════════════════════════
+let calYear = new Date().getFullYear();
+const MONTHS_ES = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+const DAYS_ES = ['D','L','M','X','J','V','S'];
+
+function renderCalendar() {
+  document.getElementById('cal-year-label').textContent = calYear;
+  const container = document.getElementById('cal-months');
+  const today = new Date();
+  const todayStr = todayKey();
+  let html = '';
+  for (let m = 0; m < 12; m++) {
+    const firstDay = new Date(calYear, m, 1).getDay();
+    const daysInMonth = new Date(calYear, m+1, 0).getDate();
+    html += `<div class="cal-month"><div class="cal-month-name">${MONTHS_ES[m]}</div><div class="cal-grid">`;
+    // Day labels
+    DAYS_ES.forEach(d => { html += `<div class="cal-day-label">${d}</div>`; });
+    // Empty slots before first day
+    for (let s = 0; s < firstDay; s++) html += `<div class="cal-day empty-slot"></div>`;
+    for (let d = 1; d <= daysInMonth; d++) {
+      const dateStr = `${calYear}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+      const dayDate = new Date(calYear, m, d);
+      const isFuture = dayDate > today && dateStr !== todayStr;
+      const isToday = dateStr === todayStr;
+      const rec = appData.sessions && appData.sessions[dateStr];
+      let cls = 'cal-day';
+      if (isToday) cls += ' today';
+      if (isFuture) cls += ' future';
+      else if (rec) {
+        if (rec.type === 'rest') cls += ' rest-day';
+        else if (rec.completed >= 7) cls += ' trained-full';
+        else cls += ' trained-partial';
+      }
+      html += `<div class="${cls}" title="${dateStr}">${d}</div>`;
+    }
+    html += `</div></div>`;
+  }
+  container.innerHTML = html;
+}
+
+// ═══════════════════════════════════════════════════
+// HISTORIAL
+// ═══════════════════════════════════════════════════
+function renderHistorial() {
+  const container = document.getElementById('hist-list');
+  if (!appData.sessions || Object.keys(appData.sessions).length === 0) {
+    container.innerHTML = `<div style="text-align:center;padding:24px;color:var(--dim);font-size:13px;">Aún no hay sesiones registradas.<br>¡Empieza hoy! 💪</div>`;
+    return;
+  }
+  const sorted = Object.entries(appData.sessions).sort((a,b) => b[0].localeCompare(a[0]));
+  container.innerHTML = sorted.map(([date, rec]) => {
+    const dotColor = rec.type === 'rest' ? 'var(--cal-red)' : rec.completed >= 7 ? 'var(--cal-green)' : 'var(--cal-yellow)';
+    const summaryText = rec.type === 'rest' ? 'Día de descanso' : `Sesión ${rec.session?.toUpperCase() || ''} · ${rec.completed || 0}/7 ejercicios`;
+    const dateObj = new Date(date + 'T12:00:00');
+    const dateLabel = dateObj.toLocaleDateString('es-MX', {weekday:'long', day:'numeric', month:'long'});
+    let bodyHTML = '';
+    if (rec.type === 'rest') {
+      bodyHTML = '<div style="color:var(--dim);font-size:12px;">Día de descanso registrado. 😴</div>';
+    } else if (rec.exercises) {
+      bodyHTML = rec.exercises.map(ex => {
+        const chips = (ex.series || []).map((s,i) => `<span class="hist-serie-chip">S${i+1}: ${s.reps} reps${s.weight ? ' · '+s.weight+' kg' : ''}</span>`).join('');
+        return `<div class="hist-ex"><div class="hist-ex-name">${ex.name}</div><div class="hist-series">${chips || '<span style="color:var(--dim);font-size:11px;">Saltado</span>'}</div></div>`;
+      }).join('');
+    }
+    return `<div class="hist-card" data-hdate="${date}">
+      <div class="hist-head">
+        <div class="hist-dot" style="background:${dotColor}"></div>
+        <div class="hist-date">${dateLabel}</div>
+        <div class="hist-summary">${summaryText}</div>
+        <div class="ex-chevron">▼</div>
+      </div>
+      <div class="hist-body">${bodyHTML}</div>
+    </div>`;
+  }).join('');
+  container.querySelectorAll('.hist-card').forEach(card => {
+    card.querySelector('.hist-head').addEventListener('click', () => {
+      const open = card.classList.toggle('open');
+      card.querySelector('.ex-chevron').textContent = open ? '▲' : '▼';
+    });
+  });
+}
+
+// ═══════════════════════════════════════════════════
+// MODAL SESIÓN
+// ═══════════════════════════════════════════════════
+let modalState = null;
+
+// ── Persist in-progress session so closing and reopening doesn't lose data ──
+function saveInProgress() {
+  if (!modalState) return;
+  try {
+    appData.inProgress = {
+      sessionKey: modalState.sessionKey,
+      currentIdx: modalState.currentIdx,
+      results: modalState.results
+    };
+    saveData(appData);
+  } catch(_) {}
+}
+function clearInProgress() {
+  try { delete appData.inProgress; saveData(appData); } catch(_) {}
+}
+
+function openModal(sessionKey, resumeState) {
+  const session = SESSIONS[sessionKey];
+  if (resumeState) {
+    modalState = { sessionKey, exercises: session.exercises, ...resumeState };
+  } else {
+    modalState = { sessionKey, exercises: session.exercises, currentIdx: 0, results: [] };
+  }
+  renderModalExercise();
+  document.getElementById('session-modal').hidden = false;
+  document.body.style.overflow = 'hidden';
+}
+function closeModal() {
+  // Save progress before closing so user can resume
+  saveInProgress();
+  document.getElementById('session-modal').hidden = true;
+  document.body.style.overflow = '';
+  modalState = null;
+}
+
+// Collect current exercise's series from the DOM (before navigating away)
+function collectCurrentSeries() {
+  const series = [];
+  document.querySelectorAll('.modal-serie').forEach(row => {
+    const reps = row.querySelector('[data-field="reps"]').value;
+    const weight = row.querySelector('[data-field="weight"]').value;
+    const checked = row.querySelector('.modal-serie-ok').classList.contains('checked');
+    series.push({ reps: reps ? parseInt(reps) : null, weight: weight ? parseFloat(weight) : null, checked });
+  });
+  return series;
+}
+
+function renderModalExercise() {
+  if (!modalState) return;
+  const { exercises, currentIdx, results } = modalState;
+  const ex = exercises[currentIdx];
+  const total = exercises.length;
+  const isLast = currentIdx === total - 1;
+  const isFirst = currentIdx === 0;
+  const numSeries = ex.sets;
+
+  // Pre-fill values if we already have data for this exercise (from going back)
+  const existing = results[currentIdx];
+
+  const progressDots = exercises.map((_,i) => {
+    let cls = 'modal-prog-dot';
+    if (i < currentIdx) cls += ' done';
+    else if (i === currentIdx) cls += ' current';
+    return `<div class="${cls}"></div>`;
+  }).join('');
+
+  const seriesRows = Array.from({length: numSeries}, (_, i) => {
+    const prev = existing?.series?.[i];
+    // Default weight: last saved result for this exercise, or 7.5
+    const lastKg = (() => {
+      for (let r = results.length - 1; r >= 0; r--) {
+        if (results[r]?.id === ex.id && results[r]?.series?.[i]?.weight != null)
+          return results[r].series[i].weight;
+      }
+      return null;
+    })();
+    const defKg = prev?.weight ?? lastKg ?? '';
+    const defReps = prev?.reps ?? '';
+    return `
+    <div class="modal-serie" data-serie="${i}">
+      <div class="modal-serie-num">${i+1}</div>
+      <div>
+        <input class="modal-input" type="number" min="0" max="50" placeholder="Reps" data-field="reps"
+          aria-label="Reps serie ${i+1}" value="${defReps}">
+        <div class="modal-input-label">Reps</div>
+      </div>
+      <div>
+        <input class="modal-input" type="number" min="0" max="99" step="0.5" placeholder="7.5" data-field="weight"
+          aria-label="Peso serie ${i+1}" value="${defKg}">
+        <div class="modal-input-label">Kg/m</div>
+      </div>
+      <button class="modal-serie-ok${prev?.checked ? ' checked' : ''}" data-si="${i}" aria-label="Serie ${i+1} completada">✓</button>
+    </div>`;
+  }).join('');
+
+  document.getElementById('modal-content').innerHTML = `
+    <div class="modal-header">
+      <div class="modal-title">${ex.name}</div>
+      <button class="modal-close" id="modal-close-btn">✕</button>
+    </div>
+    <div class="modal-progress">${progressDots}</div>
+    <div class="modal-ex-anim">${getSVG(ex.anim, 100)}</div>
+    <div class="modal-ex-name">${currentIdx+1} / ${total}</div>
+    <div class="modal-ex-target">${ex.target} · ${ex.sets} series · ${ex.reps} reps · RIR ${ex.rir}</div>
+    <div class="modal-series-list">${seriesRows}</div>
+    ${ex.steps ? `
+    <div class="modal-steps">
+      <div class="modal-steps-title">Cómo hacerlo</div>
+      ${ex.steps.map((s,i) => `<div class="modal-step-row"><div class="modal-step-num">${i+1}</div><div class="modal-step-txt">${s}</div></div>`).join('')}
+    </div>
+    ` : ''}
+    ${ex.tip ? `<div class="modal-pro-tip"><b>💡 Pro tip</b><br>${ex.tip}</div>` : ''}
+    <div style="font-size:11px;color:var(--dim);margin-bottom:12px;padding:8px 10px;background:var(--lift);border-radius:6px;">${ex.prog}</div>
+    <div class="modal-actions" style="flex-wrap:wrap;gap:6px;">
+      ${!isFirst ? `<button class="modal-btn modal-btn-skip" id="modal-prev-ex" style="flex:0 0 auto;padding:12px 14px;">← Anterior</button>` : ''}
+      <button class="modal-btn modal-btn-skip" id="modal-skip-ex" style="flex:1;">Saltar</button>
+      <button class="modal-btn modal-btn-next" id="modal-next-ex" style="flex:2;">${isLast ? '🏁 Terminar sesión' : 'Siguiente →'}</button>
+    </div>
+  `;
+
+  document.getElementById('modal-close-btn').onclick = () => { closeModal(); };
+
+  if (!isFirst) {
+    document.getElementById('modal-prev-ex').onclick = () => {
+      // Save current state before going back
+      const series = collectCurrentSeries();
+      modalState.results[currentIdx] = { id: ex.id, name: ex.name, series };
+      modalState.currentIdx--;
+      // Remove the result for the index we're going back to so it re-fills from saved
+      saveInProgress();
+      renderModalExercise();
+    };
+  }
+
+  document.getElementById('modal-skip-ex').onclick = () => {
+    modalState.results[currentIdx] = { id: ex.id, name: ex.name, series: [] };
+    if (isLast) finishSession();
+    else { modalState.currentIdx++; saveInProgress(); renderModalExercise(); }
+  };
+
+  document.getElementById('modal-next-ex').onclick = () => {
+    const series = collectCurrentSeries();
+    modalState.results[currentIdx] = { id: ex.id, name: ex.name, series };
+    if (isLast) finishSession();
+    else { modalState.currentIdx++; saveInProgress(); renderModalExercise(); }
+  };
+
+  document.querySelectorAll('.modal-serie-ok').forEach(btn => {
+    btn.onclick = () => {
+      btn.classList.toggle('checked');
+      // Guardar estado inmediatamente para que al cerrar o navegar se persistan las palomitas
+      const { exercises, currentIdx } = modalState;
+      const ex = exercises[currentIdx];
+      const series = collectCurrentSeries();
+      modalState.results[currentIdx] = { id: ex.id, name: ex.name, series };
+      saveInProgress();
+    };
+  });
+}
+
+function advanceModal() {
+  modalState.currentIdx++;
+  saveInProgress();
+  renderModalExercise();
+}
+
+function finishSession() {
+  const completed = modalState.results.filter(r => r.series && r.series.length > 0).length;
+  const totalSeries = modalState.results.reduce((sum, r) => sum + (r.series?.length || 0), 0);
+  const best = modalState.results.reduce((best, r) => {
+    const maxReps = Math.max(...(r.series?.map(s => s.reps || 0) || [0]));
+    return maxReps > (best.reps || 0) ? { name: r.name, reps: maxReps } : best;
+  }, {});
+  const quotes = [
+    "La disciplina supera a la motivación. Hoy lo demostraste. 🔥",
+    "Cada rep cuenta. Cada sesión te acerca a la mejor versión de ti. 💪",
+    "No es suerte, es consistencia. Eso es lo que te hace diferente.",
+    "Los músculos no mienten. El trabajo de hoy se verá mañana.",
+    "Desde los 16 entrenando en casa — eso es carácter, Bro. 🏆"
+  ];
+  const quote = quotes[Math.floor(Math.random() * quotes.length)];
+  document.getElementById('modal-content').innerHTML = `
+    <div class="celebrate-panel">
+      <div class="celebrate-emoji">🔥</div>
+      <div class="celebrate-title">¡Sesión completada!</div>
+      <div class="celebrate-sub">Sesión ${modalState.sessionKey.toUpperCase()} · ${new Date().toLocaleDateString('es-MX',{weekday:'long',day:'numeric',month:'long'})}</div>
+      <div class="celebrate-stats">
+        <div class="cel-stat"><div class="cel-stat-val">${completed}</div><div class="cel-stat-lbl">Ejercicios</div></div>
+        <div class="cel-stat"><div class="cel-stat-val">${totalSeries}</div><div class="cel-stat-lbl">Series totales</div></div>
+        <div class="cel-stat"><div class="cel-stat-val">${best.reps || '—'}</div><div class="cel-stat-lbl">Mejor set</div></div>
+      </div>
+      <div class="celebrate-quote">${quote}</div>
+      <button class="modal-btn modal-btn-next modal-btn-close" id="celebrate-close">Cerrar ✓</button>
+    </div>
+  `;
+  // Save to sessions
+  if (!appData.sessions) appData.sessions = {};
+  appData.sessions[todayKey()] = {
+    type: 'training',
+    session: modalState.sessionKey,
+    completed,
+    exercises: modalState.results
+  };
+
+  // ── Auto-sync to weekly tracker (Semanas tab) ──────────────
+  // Figure out which week index this is (0 = current week)
+  const sessKey = modalState.sessionKey;
+  const weekIdx = (() => {
+    const now = new Date();
+    const dow = now.getDay();
+    const monday = new Date(now);
+    monday.setDate(now.getDate() - (dow === 0 ? 6 : dow - 1));
+    monday.setHours(0,0,0,0);
+    // getWeekStart(0) gives monday of current week — this IS week 0
+    return 0;
+  })();
+  if (!appData.weeks) appData.weeks = {};
+  if (!appData.weeks[sessKey]) appData.weeks[sessKey] = {};
+  modalState.results.forEach(exResult => {
+    if (!exResult.series || exResult.series.length === 0) return;
+    // Best set: highest reps; use that set's weight
+    const best = exResult.series.reduce((b, s) => (s.reps || 0) > (b.reps || 0) ? s : b, exResult.series[0]);
+    if (!appData.weeks[sessKey][exResult.id]) appData.weeks[sessKey][exResult.id] = {};
+    // Only overwrite if not already manually filled
+    const existing = appData.weeks[sessKey][exResult.id][weekIdx];
+    if (!existing || (!existing.reps && !existing.kg)) {
+      appData.weeks[sessKey][exResult.id][weekIdx] = {
+        reps: best.reps ?? '',
+        kg: best.weight ?? ''
+      };
+    }
+  });
+
+  clearInProgress();
+  saveData(appData);
+  document.getElementById('celebrate-close').onclick = () => {
+    closeModal();
+    renderCalendar();
+    renderHistorial();
+  };
+}
+
+// ═══════════════════════════════════════════════════
+// REST DAY
+// ═══════════════════════════════════════════════════
+function markRestDay() {
+  if (!appData.sessions) appData.sessions = {};
+  const key = todayKey();
+  if (appData.sessions[key]) {
+    // Already registered, show confirm UI inline
+    return;
+  }
+  appData.sessions[key] = { type: 'rest' };
+  saveData(appData);
+  renderCalendar();
+  renderHistorial();
+  document.getElementById('btn-rest-day').textContent = '✓ Guardado';
+  document.getElementById('btn-rest-day').disabled = true;
+  setTimeout(() => {
+    document.getElementById('btn-rest-day').textContent = '😴 No entrené hoy';
+    document.getElementById('btn-rest-day').disabled = false;
+  }, 2000);
+}
+
+// ═══════════════════════════════════════════════════
+// TABS
+// ═══════════════════════════════════════════════════
+const TAB_PANELS = { a:'tab-a', b:'tab-b', prog:'tab-prog', reg:'tab-reg', semanas:'tab-semanas' };
+function switchTab(t) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === t));
+  Object.entries(TAB_PANELS).forEach(([k,id]) => {
+    const el = document.getElementById(id);
+    if (el) el.hidden = k !== t;
+  });
+  if (t === 'reg') { renderCalendar(); renderHistorial(); renderStreak(); }
+  if (t === 'semanas') { renderSemanas(); }
+  try { localStorage.setItem('rutina-tab-v3', t); } catch(_) {}
+}
+document.querySelectorAll('.tab-btn').forEach(b => b.addEventListener('click', () => switchTab(b.dataset.tab)));
+
+// ═══════════════════════════════════════════════════
+// THEME
+// ═══════════════════════════════════════════════════
+const root = document.documentElement;
+const themeBtn = document.getElementById('theme-toggle');
+function applyTheme(t) {
+  root.dataset.theme = t;
+  themeBtn.textContent = t === 'dark' ? '☀️' : '🌙';
+  try { localStorage.setItem('rutina-theme-v3', t); } catch(_) {}
+}
+try {
+  const saved = localStorage.getItem('rutina-theme-v3');
+  if (saved) applyTheme(saved);
+  else { const dark = window.matchMedia('(prefers-color-scheme: dark)').matches; themeBtn.textContent = dark ? '☀️' : '🌙'; }
+} catch(_) {}
+themeBtn.addEventListener('click', () => applyTheme(root.dataset.theme === 'dark' ? 'light' : 'dark'));
+
+// ═══════════════════════════════════════════════════
+// SEMANAS (10-WEEK TRACKER)
+// ═══════════════════════════════════════════════════
+const NUM_WEEKS = 10;
+
+// Parse "8–12" → [8, 12]; "30–50 s" → [30, 50] (numbers only)
+function parseRepRange(repsStr) {
+  const nums = repsStr.match(/\d+/g);
+  if (!nums) return [null, null];
+  return nums.length >= 2 ? [parseInt(nums[0]), parseInt(nums[1])] : [parseInt(nums[0]), parseInt(nums[0])];
+}
+
+// Get the Monday of the current week as a Date
+function getWeekStart(weeksOffset) {
+  const now = new Date();
+  const dow = now.getDay(); // 0=Sun
+  const monday = new Date(now);
+  monday.setDate(now.getDate() - (dow === 0 ? 6 : dow - 1) + weeksOffset * 7);
+  monday.setHours(0,0,0,0);
+  return monday;
+}
+
+function weekLabel(wIdx) {
+  const d = getWeekStart(wIdx);
+  const day = d.getDate();
+  const mon = d.toLocaleDateString('es-MX', { month: 'short' });
+  return `S${wIdx+1}<br><span class="sem-week-date">${day} ${mon}</span>`;
+}
+
+// Save semanas data
+let saveSemanasTimeout = null;
+function saveSemanasField(sessKey, exId, wIdx, field, value) {
+  if (!appData.weeks) appData.weeks = {};
+  if (!appData.weeks[sessKey]) appData.weeks[sessKey] = {};
+  if (!appData.weeks[sessKey][exId]) appData.weeks[sessKey][exId] = {};
+  if (!appData.weeks[sessKey][exId][wIdx]) appData.weeks[sessKey][exId][wIdx] = {};
+  appData.weeks[sessKey][exId][wIdx][field] = value;
+  clearTimeout(saveSemanasTimeout);
+  saveSemanasTimeout = setTimeout(() => saveData(appData), 600);
+}
+
+function getSemanasVal(sessKey, exId, wIdx, field) {
+  try { return appData.weeks?.[sessKey]?.[exId]?.[wIdx]?.[field] ?? ''; } catch(_) { return ''; }
+}
+
+function updateSemInputStyle(input, repsVal, repMin, repMax) {
+  const v = parseFloat(repsVal);
+  input.classList.remove('filled', 'filled-over');
+  if (!isNaN(v) && String(repsVal).trim() !== '') {
+    if (repMin !== null && v >= repMin) {
+      input.classList.add(repMax !== null && v >= repMax ? 'filled-over' : 'filled');
+    } else {
+      input.classList.add('filled');
+    }
+  }
+}
+
+function renderSemanas() {
+  const container = document.getElementById('sem-content');
+  if (!container) return;
+  let html = '';
+
+  ['a','b'].forEach(sessKey => {
+    const sess = SESSIONS[sessKey];
+    html += `<div class="sem-session-block">`;
+    html += `<div class="sem-session-title">Sesión ${sessKey.toUpperCase()} — ${sess.days}</div>`;
+
+    sess.exercises.forEach(ex => {
+      const [repMin, repMax] = parseRepRange(ex.reps);
+      // Check if reps include time (seconds)
+      const isTime = /s$|seg|s\b/.test(ex.reps);
+      const targetLabel = ex.reps + (isTime ? '' : ' reps') + (ex.tool === 'm' ? ' · ' + '?' + ' kg' : '');
+
+      html += `<div class="sem-ex-block">`;
+      html += `<div class="sem-ex-head">
+        <div class="sem-ex-name">${ex.name}</div>
+        <div class="sem-ex-target">Meta: ${ex.reps}${isTime ? '' : ' reps'}</div>
+      </div>`;
+      html += `<div class="sem-table-wrap"><table class="sem-table"><thead><tr>`;
+      html += `<th class="th-ex">Semana</th>`;
+      for (let w = 0; w < NUM_WEEKS; w++) {
+        html += `<th><div class="sem-week-header">${weekLabel(w)}</div></th>`;
+      }
+      html += `</tr></thead><tbody>`;
+
+      // Reps row
+      html += `<tr><td class="td-serie">Reps</td>`;
+      for (let w = 0; w < NUM_WEEKS; w++) {
+        const savedReps = getSemanasVal(sessKey, ex.id, w, 'reps');
+        html += `<td><div class="sem-cell">
+          <input type="number" min="0" max="999" class="sem-input"
+            data-sess="${sessKey}" data-ex="${ex.id}" data-w="${w}" data-field="reps"
+            data-rmin="${repMin ?? ''}" data-rmax="${repMax ?? ''}"
+            placeholder="${repMin ?? '—'}"
+            value="${savedReps}">
+          <div class="sem-input-lbl">reps</div>
+        </div></td>`;
+      }
+      html += `</tr>`;
+
+      // Kg row (only for dumbbell exercises)
+      if (ex.tool === 'm' || ex.tool === 'mc') {
+        html += `<tr><td class="td-serie">Kg</td>`;
+        for (let w = 0; w < NUM_WEEKS; w++) {
+          const savedKg = getSemanasVal(sessKey, ex.id, w, 'kg');
+          html += `<td><div class="sem-cell">
+            <input type="number" min="0" max="99" step="0.5" class="sem-input"
+              data-sess="${sessKey}" data-ex="${ex.id}" data-w="${w}" data-field="kg"
+              placeholder="kg"
+              value="${savedKg}">
+            <div class="sem-input-lbl">kg/m</div>
+          </div></td>`;
+        }
+        html += `</tr>`;
+      }
+
+      html += `</tbody></table></div></div>`;
+    });
+
+    html += `</div>`;
+  });
+
+  container.innerHTML = html;
+
+  // Apply initial styling + bind events
+  container.querySelectorAll('.sem-input').forEach(input => {
+    const field = input.dataset.field;
+    if (field === 'reps') {
+      const rmin = input.dataset.rmin !== '' ? parseInt(input.dataset.rmin) : null;
+      const rmax = input.dataset.rmax !== '' ? parseInt(input.dataset.rmax) : null;
+      updateSemInputStyle(input, input.value, rmin, rmax);
+    } else if (input.value.trim() !== '') {
+      input.classList.add('filled');
+    }
+
+    input.addEventListener('input', () => {
+      const { sess, ex, field } = input.dataset;
+      const w = parseInt(input.dataset.w);
+      saveSemanasField(sess, ex, w, field, input.value);
+      if (field === 'reps') {
+        const rmin = input.dataset.rmin !== '' ? parseInt(input.dataset.rmin) : null;
+        const rmax = input.dataset.rmax !== '' ? parseInt(input.dataset.rmax) : null;
+        updateSemInputStyle(input, input.value, rmin, rmax);
+      } else {
+        input.classList.toggle('filled', input.value.trim() !== '');
+      }
+    });
+  });
+}
+
+// ═══════════════════════════════════════════════════
+// RACHA REAL (solo cuenta días de entreno: mié/sáb=A, jue/dom=B)
+// ═══════════════════════════════════════════════════
+function calcStreak() {
+  if (!appData.sessions) return 0;
+  // Días que DEBEN entrenar: 3=mié, 6=sáb (A) y 4=jue, 0=dom (B)
+  const trainingDays = new Set([0, 3, 4, 6]);
+  let streak = 0;
+  const today = new Date();
+  today.setHours(0,0,0,0);
+
+  // Recorre hacia atrás desde hoy
+  for (let i = 0; i <= 365; i++) {
+    const d = new Date(today);
+    d.setDate(today.getDate() - i);
+    const dow = d.getDay();
+    // Si no es día de entreno, se salta (no rompe la racha)
+    if (!trainingDays.has(dow)) continue;
+    const key = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+    const rec = appData.sessions[key];
+    // Si es un día de entreno que pasó y no hay registro → racha rota
+    if (!rec && d < today) break;
+    // Si está registrado como entrenamiento (no descanso) → suma
+    if (rec && rec.type === 'training') streak++;
+    // Si está como descanso en día de entreno → racha rota
+    else if (rec && rec.type === 'rest') break;
+  }
+  return streak;
+}
+
+function renderStreak() {
+  const s = calcStreak();
+  const el = document.getElementById('streak-display');
+  const txt = document.getElementById('streak-text');
+  if (!el || !txt) return;
+  txt.textContent = `Racha: ${s} día${s !== 1 ? 's' : ''}`;
+  el.classList.toggle('active', s > 0);
+  el.querySelector('.streak-fire').textContent = s >= 7 ? '🏆' : s >= 3 ? '🔥' : '🔥';
+}
+
+// ═══════════════════════════════════════════════════
+// EXPORTAR / IMPORTAR DATOS
+// ═══════════════════════════════════════════════════
+function exportData() {
+  const json = JSON.stringify(appData, null, 2);
+  const blob = new Blob([json], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  const date = new Date().toISOString().slice(0,10);
+  a.download = `rutina-david-${date}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function importData(file) {
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    try {
+      const parsed = JSON.parse(e.target.result);
+      if (typeof parsed !== 'object' || parsed === null) throw new Error('invalid');
+      Object.assign(appData, parsed);
+      saveData(appData);
+      renderCalendar();
+      renderHistorial();
+      renderStreak();
+      alert('✅ Datos importados correctamente. ¡Tu progreso está de vuelta!');
+    } catch(_) {
+      alert('❌ El archivo no es válido. Asegúrate de usar un archivo exportado de esta app.');
+    }
+  };
+  reader.readAsText(file);
+}
+
+// ═══════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════
+renderExList('a');
+renderExList('b');
+renderStreak();
+
+// ── Resume in-progress session if any ──────────────────────
+(function checkResume() {
+  try {
+    const ip = appData.inProgress;
+    if (!ip || !ip.sessionKey || !SESSIONS[ip.sessionKey]) return;
+    // Check it's from today (don't resume old sessions)
+    const todayAlreadySaved = appData.sessions && appData.sessions[todayKey()];
+    if (todayAlreadySaved) { clearInProgress(); return; }
+    // Show resume banner
+    const banner = document.createElement('div');
+    banner.id = 'resume-banner';
+    banner.style.cssText = 'position:fixed;bottom:max(16px,env(safe-area-inset-bottom,0px));left:max(16px,env(safe-area-inset-left,0px));right:max(16px,env(safe-area-inset-right,0px));background:var(--accent);color:var(--bg);border-radius:12px;padding:12px 16px;z-index:200;display:flex;align-items:center;gap:10px;box-shadow:0 4px 20px rgba(0,0,0,.3);font-family:\'Barlow\',sans-serif;';
+    banner.innerHTML = `
+      <div style="flex:1;font-size:13px;font-weight:600;">
+        💪 Sesión ${ip.sessionKey.toUpperCase()} en progreso — ejercicio ${ip.currentIdx+1}/7
+      </div>
+      <button id="resume-btn" style="background:var(--bg);color:var(--accent);border:none;border-radius:8px;padding:8px 14px;font-family:\'Barlow Condensed\',sans-serif;font-style:italic;font-weight:800;font-size:15px;cursor:pointer;">Continuar →</button>
+      <button id="resume-dismiss" style="background:transparent;border:none;color:var(--bg);opacity:.7;font-size:18px;cursor:pointer;padding:4px;">✕</button>
+    `;
+    document.body.appendChild(banner);
+    document.getElementById('resume-btn').onclick = () => {
+      banner.remove();
+      openModal(ip.sessionKey, { currentIdx: ip.currentIdx, results: ip.results });
+    };
+    document.getElementById('resume-dismiss').onclick = () => {
+      banner.remove();
+      clearInProgress();
+    };
+  } catch(_) {}
+})();
+
+document.getElementById('btn-start-session').addEventListener('click', () => {
+  // If there's an in-progress session for today, resume it
+  try {
+    const ip = appData.inProgress;
+    const todayAlreadySaved = appData.sessions && appData.sessions[todayKey()];
+    if (ip && ip.sessionKey && SESSIONS[ip.sessionKey] && !todayAlreadySaved) {
+      document.getElementById('resume-banner')?.remove();
+      openModal(ip.sessionKey, { currentIdx: ip.currentIdx, results: ip.results });
+      return;
+    }
+  } catch(_) {}
+  const s = getTodaySession();
+  if (s) openModal(s);
+  else {
+    document.getElementById('modal-content').innerHTML = `
+      <div class="modal-header"><div class="modal-title">Hoy es día libre</div><button class="modal-close" id="modal-close-btn">✕</button></div>
+      <div style="text-align:center;padding:20px 0;">
+        <div style="font-size:48px;margin-bottom:12px;">🌴</div>
+        <div style="font-size:14px;color:var(--dim);margin-bottom:16px;">Hoy no toca entrenamiento (Lun/Mar/Vie).<br>¡Descansa y recupera!</div>
+        <button class="modal-btn modal-btn-next modal-btn-close" id="celebrate-close">Entendido</button>
+      </div>`;
+    document.getElementById('session-modal').hidden = false;
+    document.body.style.overflow = 'hidden';
+    document.getElementById('modal-close-btn').onclick = closeModal;
+    document.getElementById('celebrate-close').onclick = closeModal;
+  }
+});
+document.getElementById('btn-rest-day').addEventListener('click', markRestDay);
+
+// Exportar / Importar
+document.getElementById('btn-export').addEventListener('click', exportData);
+document.getElementById('import-file').addEventListener('change', (e) => {
+  const file = e.target.files[0];
+  if (file) importData(file);
+  e.target.value = ''; // reset para poder importar el mismo archivo otra vez
+});
+
+document.getElementById('cal-prev').addEventListener('click', () => { calYear--; renderCalendar(); });
+document.getElementById('cal-next').addEventListener('click', () => { calYear++; renderCalendar(); });
+
+// Restore tab
+try {
+  const savedTab = localStorage.getItem('rutina-tab-v3');
+  if (savedTab && TAB_PANELS[savedTab]) switchTab(savedTab);
+} catch(_) {}
+
+// Close modal on overlay click
+document.getElementById('session-modal').addEventListener('click', (e) => {
+  if (e.target === document.getElementById('session-modal')) closeModal();
+});
+
+})();
+</script>
